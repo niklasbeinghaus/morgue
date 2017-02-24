@@ -1,0 +1,18 @@
+--- 
+
+  kind: Service
+  apiVersion: v1
+  metadata:
+    name: morgue
+    labels:
+      app: morgue
+      environment: development
+  spec:
+    ports:
+      - port: 80
+        targetPort: 80
+    selector:
+      app: morgue
+      environment: development
+      role: http
+    type: ClusterIP

@@ -3,12 +3,10 @@
 
 
 ## Overview
-This is a PHP based web application to help manage your postmortems. It has a
-pluggable feature system and can pull in related information from IRC and JIRA
-as well as storing relevant links and graphs. This [talk][1] from DevOpsDays NYC
-2013 gives an introduction and shows some of its features.
+This is a Dockerized version of the well-known [Etsy Morgue](https://github.com/etsy/morgue) - Post Mortem tracker. For Kubernetes users I have also incuded a Kubernetes deployment config for easy deployment.
 
-You can also join `#morgue` on Freenode IRC if you have questions.
+If you don't need to modify any content I am publicly hosting a [working image](https://hub.docker.com/r/philwhiteuk/morgue/)
+
 
 ## Morgue tour
 

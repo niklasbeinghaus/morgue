@@ -1,0 +1,116 @@
+---
+
+  apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: morgue-db-pv
+  spec:
+    capacity:
+      storage: 10Gi
+    accessModes:
+      - ReadWriteOnce
+    gcePersistentDisk:
+      pdName: morgue-db
+      fsType: ext4
+
+---
+
+  apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: morgue-db-pv-claim
+  spec:
+    volumeName: morgue-db-pv
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 10Gi
+
+---
+
+  kind: Deployment
+  apiVersion: extensions/v1beta1
+  metadata:
+    name: morgue
+    namespace: default
+    labels:
+      name: morgue
+      app: morgue
+      role: http
+      environment: development
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        name: morgue
+    strategy:
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 1
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          name: morgue
+          app: morgue
+          environment: development
+          role: http
+          deployment: morgue
+          baseImage: php-5-fpm-alpine
+      spec:
+        containers:
+        - image: philwhiteuk/morgue
+          imagePullPolicy: Always
+          name: morgue
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          env:
+            - name: MORGUE_DB_HOST
+              value: 127.0.0.1
+            - name: MORGUE_DB_NAME
+              value: morgue
+            - name: MORGUE_DB_USER
+              value: morgue
+            - name: MORGUE_DB_PASS
+              value: 
+          livenessProbe:
+            initialDelaySeconds: 10
+            httpGet:
+              path: /healthz
+              port: 80
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+        - image: mysql:5
+          name: morgue-db
+          ports:
+          - containerPort: 3306
+            protocol: TCP
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: 
+            - name: MYSQL_ONETIME_PASSWORD
+              value: 'yes'
+            - name: MYSQL_DATABASE
+              value: morgue
+            - name: MYSQL_USER
+              value: morgue
+            - name: MYSQL_PASSWORD
+              value: 
+          args:
+            - "--ignore-db-dir=lost+found"
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+        volumes:
+          - name: mysql-persistent-storage
+            persistentVolumeClaim:
+              claimName: morgue-db-pv-claim
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
