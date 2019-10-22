@@ -1,6 +1,6 @@
 {
     "environment": "development",
-    "timezone": "Europe/Zurich",
+    "timezone": "Europe/Berlin",
 
     "database":
     {  "mysqlhost": "localhost",

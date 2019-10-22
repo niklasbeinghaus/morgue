@@ -18,7 +18,7 @@ class Configuration {
         $config = json_decode(file_get_contents($configfile), true);
 
         if (!$config["database"]) {
-            $config["database"]["mysqlhost"] = getenv('MORGUE_DB_HOST') ?: 'localhost';
+            $config["database"]["mysqlhost"] = getenv('MORGUE_DB_HOST') ?: 'morgue';
             $config["database"]["mysqlport"] = getenv('MORGUE_DB_PORT') ?: 3306;
             $config["database"]["database"] = getenv('MORGUE_DB_NAME');
             $config["database"]["username"] = getenv('MORGUE_DB_USER');

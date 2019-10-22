@@ -3,10 +3,12 @@
 
 
 ## Overview
-This is a Dockerized version of the well-known [Etsy Morgue](https://github.com/etsy/morgue) - Post Mortem tracker. For Kubernetes users I have also incuded a Kubernetes deployment config for easy deployment.
+This is a PHP based web application to help manage your postmortems. It has a
+pluggable feature system and can pull in related information from IRC and JIRA
+as well as storing relevant links and graphs. This [talk][1] from DevOpsDays NYC
+2013 gives an introduction and shows some of its features.
 
-If you don't need to modify any content I am publicly hosting a [working image](https://hub.docker.com/r/philwhiteuk/morgue/)
-
+You can also join `#morgue` on Freenode IRC if you have questions.
 
 ## Morgue tour
 
@@ -31,14 +33,11 @@ If you don't need to modify any content I am publicly hosting a [working image](
 ## Setup
 
 ### Requirements
-- PHP 7.0 or higher
-- MySQL 5.5 or higher
-- PHP MySQL driver
-- Apache
-- mod_rewrite
+- Docker
 
 ### Create a morgue configuration file
 
+If you're using the docker-compose, use the docker.json to change settings.
 In the cloned repo, use the **example.json** file as a template to create your
 own configuration file.
 
@@ -46,82 +45,13 @@ own configuration file.
 cp config/example.json config/development.json
 ```
 
-**NOTES**: You may need to remove references to "custom_feature" from your
+**NOTES**:
+You may need to remove references to "custom_feature" from your
 development.json as those only exist as examples to show you how to add
-custom features to your Morgue installation.
+custom features to your Morgue installation. 
 
 ### Composer
 Morgue relies on the [Slim Framework](http://www.slimframework.com/), a dependency that can be easily managed by Composer.
-Directions to install composer can be found on [here][2]).
-Once installed, run :
-
-```
-php composer.phar update
-```
-
-### Apache
-This is a basic example for an Apache vhost. The `MORGUE_ENVIRONMENT` variable
-is used to determine which config file to use (see above step).
-
-```
-    <VirtualHost *:80>
-      ServerName   morgue.hostname.com
-
-      DocumentRoot /var/www/morgue/htdocs
-
-      <Directory /var/www/morgue/htdocs>
-        AllowOverride All
-      </Directory>
-
-      SetEnv MORGUE_ENVIRONMENT development
-
-      php_value include_path "/var/www/morgue:/var/www/morgue/features"
-    </VirtualHost>
-```
-
-**NOTE**: If you maintain a custom Morgue features outside the document root, be
-sure to include that directory in the ``php_value include_path`` directive.
-
-Restart apache and hit the servername you defined above.
-
-### MySQL
-Create a database named morgue and give access to the morgue user with the
-morgue password defined in the config file you created at step 1
-```
-CREATE DATABASE morgue;
-CREATE USER 'morgue'@'localhost' IDENTIFIED BY 'morgue';
-GRANT ALL ON morgue.* TO 'morgue'@'localhost';
-SET PASSWORD FOR 'morgue'@'localhost' = PASSWORD('morgue_password');
-```
-
-Then add the schema to the database:
-```
-mysql -p -u morgue -h localhost morgue < schemas/postmortems.sql
-```
-
-Note : add any additional schemas you may use:
-```
-mysql -p -u morgue -h localhost morgue < schemas/images.sql
-mysql -p -u morgue -h localhost morgue < schemas/jira.sql
-mysql -p -u morgue -h localhost morgue < schemas/links.sql
-mysql -p -u morgue -h localhost morgue < schemas/irc.sql
-```
-
-### Start a development server
-
-Using PHP built-in webserver it is possible to start quickly viewing what morgue does with the following command run from the document root.
-
-**NOTE**: You may need to do some PHP setup before doing this. Follow the
-installation instructions [here][2] to install composer, then from your
-morgue base directory run `php composer.phar update` to install and update
-the necessary PHP packages.
-
-```
-cd htdocs
-MORGUE_ENVIRONMENT=development php -d include_path=".:$(dirname `pwd`):$(dirname `pwd`)/features" -S localhost:8000
-```
-
-Open http://localhost:8000 to view Morgue
 
 ## Configuration
 

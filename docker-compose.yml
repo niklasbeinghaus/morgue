@@ -1,17 +1,18 @@
-version: '2'
+version: '3.7'
 services:
   morgue:
     build:
       context: ./
-      dockerfile: Dockerfile-morgue
-    links:
+      dockerfile: Dockerfile
+    depends_on:
       - morguedb
+      - migrate
     environment:
       MORGUE_ENVIRONMENT: docker
-      MORGUE_DB_HOST: morguedb
+      MORGUE_DB_HOST: morgue_morguedb_1
       MORGUE_DB_NAME: morgue
       MORGUE_DB_USER: morgue
-      MORGUE_DB_PASS: password
+      MORGUE_DB_PASS: changeme
     ports:
       - 80:80
   morguedb:
@@ -21,4 +22,11 @@ services:
       MYSQL_ONETIME_PASSWORD: 'yes'
       MYSQL_DATABASE: morgue
       MYSQL_USER: morgue
-      MYSQL_PASSWORD: password
+      MYSQL_PASSWORD: changeme
+  migrate:
+    image: flyway/flyway
+    depends_on:
+      - morguedb
+    command: -url=jdbc:mysql://morguedb/morgue -user=morgue -password=changeme -connectRetries=60 migrate
+    volumes: 
+      - ./schemas:/flyway/sql

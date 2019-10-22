@@ -2,7 +2,7 @@
 # make it so
 #
 
-PHPUNIT:=vendor/bin/phpunit --include-path=phplib --log-junit results.xml
+PHPUNIT:=docker exec -it morgue_morgue_1 vendor/bin/phpunit --include-path=phplib --log-junit results.xml
 VERSION := $(shell git rev-parse --short HEAD)
 
 # targets
