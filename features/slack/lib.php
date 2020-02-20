@@ -35,7 +35,7 @@ class Slack {
             return self::$user_list;
         }
 
-        $apiResult = $this->curlClient->get('https://etsy.slack.com/api/users.list', array('token' => $this->oAuthToken));
+        $apiResult = $this->curlClient->get('https://reservix.slack.com/api/users.list', array('token' => $this->oAuthToken));
         $userListData = json_decode($apiResult);
 
         $userList = [];
@@ -69,7 +69,7 @@ class Slack {
                 'exclude_members'   => 1
             );
 
-            $result = $this->curlClient->get('https://slack.com/api/channels.list', $queryParam);
+            $result = $this->curlClient->get('https://reservix.slack.com/api/channels.list', $queryParam);
 
             // If the API is JSON, use json_decode.
             $data = json_decode($result);

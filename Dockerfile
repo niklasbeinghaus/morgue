@@ -1,5 +1,5 @@
 FROM php:7.3-fpm-alpine
-MAINTAINER Triptease (ops@triptease.com)
+MAINTAINER njørd (njoerd@cccfr.de)
 
 EXPOSE 80 443
 ENTRYPOINT ["/bin/sh","/usr/src/app/run.sh"]
@@ -19,4 +19,4 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 
 COPY . /usr/src/app
 RUN ln -sf /usr/src/app/nginx/site.conf /etc/nginx/nginx.conf \
-	&& php composer.phar update
+	&& php composer.phar update --no-dev

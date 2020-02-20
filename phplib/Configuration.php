@@ -30,6 +30,50 @@ class Configuration {
         } else {
             foreach($config["feature"] as $feature) {
                 if ($feature['name'] == $name) {
+                    if ($environment == 'docker') {
+                        $envvars = [
+                            // Gcal ClientID
+                            [
+                                'key' => 'clientId',
+                                'env' => 'MORGUE_' . strtoupper($name) . '_CLIENT_ID'
+                            ],
+                            // Gcal ApiKey
+                            [
+                                'key' => 'apiKey',
+                                'env' => 'MORGUE_' . strtoupper($name) . '_API_KEY'
+                            ],
+                            // Gcal Calendar ID
+                            [
+                                'key' => 'id',
+                                'env' => 'MORGUE_' . strtoupper($name) . '_CALENDARID'
+                            ],
+                            // Slack OAuth
+                            [
+                                'key' => 'oAuth_token',
+                                'env' => 'MORGUE_' . strtoupper($name) . '_OAUTH_TOKEN'
+                            ],
+                            // Jira BaseUrl
+                            [
+                                'key' => 'baseurl',
+                                'env' => 'MORGUE_' . strtoupper($name) . '_BASEURL'
+                            ],
+                            // Jira User
+                            [
+                                'key' => 'username',
+                                'env' => 'MORGUE_' . strtoupper($name) . '_USERNAME'
+                            ],
+                            // Jira Password
+                            [
+                                'key' => 'password',
+                                'env' => 'MORGUE_' . strtoupper($name) . '_PASSWORD'
+                            ],
+                        ];
+                        foreach ($envvars as $envvar) {
+                            if (array_key_exists($envvar['key'])) {
+                                $feature[$envvar['key']] = getenv($envvar['env']) ?: '';
+                            }
+                        }
+                    }
                     return $feature;
                 }
             }
