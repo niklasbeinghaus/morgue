@@ -90,7 +90,7 @@ foreach ($config['feature'] as $feature) {
 }
 // set admin info on the environment array
 // so it's available to our request handlers
-$env = $app->environment;
+$env = $app->getContainer()['environment'];
 $env['admin'] = MorgueAuth::get_auth_data();
 $app->get(
     '/',

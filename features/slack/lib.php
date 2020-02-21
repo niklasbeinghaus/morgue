@@ -26,7 +26,7 @@ class Slack
     /**
      * get a list of the Slack Users
      *
-     * @returns array of Slack_ user list
+     * @return array of Slack_ user list
      */
     function get_user_list()
     {
@@ -54,7 +54,7 @@ class Slack
      * if the 'morgue_get_slack_channels_list' exists, call it and return
      * its results - otherwise, lookup the config file for ['Slack_']['channels']
      *
-     * @returns array of Slack_ channels strings
+     * @return array of Slack_ channels strings
      */
     function get_slack_channels_list()
     {

@@ -40,7 +40,7 @@ class Persistence
      * @param $conn - PDO connection object, will be newly instantiated when
      *                null (default: null)
      *
-     * @returns the event map including an "id" field on success and a map of the
+     * @return the event map including an "id" field on success and a map of the
      * form ( "id" => null, "error" => "an error message" ) on failure
      */
     static function save_event($postmortem, $conn = null)
@@ -164,7 +164,7 @@ class Persistence
      * @param $conn - PDO connection object, will be newly instantiated when
      *                         null (default: null)
      *
-     * @returns a postmortem map including an "id" field on success or a map of the
+     * @return a postmortem map including an "id" field on success or a map of the
      * form ( "id" => null, "error" => "an error message" ) on failure
      */
     static function get_postmortem($postmortem_id, $conn = null)
@@ -194,7 +194,7 @@ class Persistence
      * @param $conn - PDO connection object, will be newly instantiated when
      *                null (default: null)
      *
-     * @returns the postmortem map including an "id" field on success and a map of the
+     * @return the postmortem map including an "id" field on success and a map of the
      * form ( "id" => null, "error" => "an error message" ) on failure
      */
     static function save_forum($forum, $conn = null)
@@ -440,7 +440,7 @@ class Persistence
      * @param $pk - the primary key to delete for
      * @param $conn - PDO connection object
      *
-     * @returns ( 'status' => self::OK) on success
+     * @return ( 'status' => self::OK) on success
      * or ( "status" => self::ERROR, "error" => "an error message" ) on failure
      */
     static function flag_as_deleted($table_name, $pk_column, $pk, $conn)
@@ -462,7 +462,7 @@ class Persistence
      * @param $pk - the primary key to delete for
      * @param $conn - PDO connection object
      *
-     * @returns ( 'status' => self::OK) on success
+     * @return ( 'status' => self::OK) on success
      * or ( "status" => self::ERROR, "error" => "an error message" ) on failure
      */
     static function flag_as_undeleted($table_name, $pk_column, $pk, $conn)

@@ -8,9 +8,9 @@ class Configuration
     /**
      * get the configuration from the JSON files
      *
-     * @param name - name of the specific feature to get config for
+     * @param string name - name of the specific feature to get config for
      *
-     * @returns a dictionary object with the config data or an empty array
+     * @return array dictionary object with the config data or an empty array
      */
     static function get_configuration($name = null)
     {

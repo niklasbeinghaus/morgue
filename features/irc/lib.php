@@ -158,7 +158,7 @@ class Irc
      * @param int $id - ID to delete
      * @param PDO|null $conn - PDO connection object (default: null)
      *
-     * @returns array ( "status" => self::OK ) on success
+     * @return array ( "status" => self::OK ) on success
      * or ( "status" => self::ERROR, "error" => "an error message" ) on failure
      */
     static function undelete_channel($id, $conn = null)

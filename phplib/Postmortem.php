@@ -21,14 +21,14 @@ class Postmortem
      * events table and all properties given as arrays are stored in the
      * accompanying junction table.
      *
-     * @param $event - map of an event with the following keys
+     * @param array $event - map of an event with the following keys
      *                 - title => the title of the event
      *                 - summary => the summary of the post mortem
      *                 - starttime => start time as unix timestamp
      *                 - endtime   => end time as unix timestamp
      *                 - statustime => status time as unix timestamp
      *                 - detecttime  => detect time as unix timestamp
-     * @param $conn - PDO connection object, will be newly instantiated when
+     * @param PDO|null $conn - PDO connection object, will be newly instantiated when
      *                null (default: null)
      *
      * @return array $event the event map including an "id" field on success and a map of the
@@ -67,11 +67,12 @@ class Postmortem
      * @param $conn - PDO connection object, will be newly instantiated when
      *                null (default: null)
      *
-     * @returns an event map including an "id" field on success or a map of the
+     * @return array an event map including an "id" field on success or a map of the
      * form ( "id" => null, "error" => "an error message" ) on failure
      */
-    static function get_event(int $event_id, $conn = null)
+    static function get_event($event_id, $conn = null)
     {
+        $event_id = (int)$event_id;
         $conn = $conn ?: Persistence::get_database_object();
         if (is_null($conn)) {
             return array("id" => null, "error" => "Couldn't get connection object.");
@@ -105,6 +106,7 @@ class Postmortem
      */
     static function delete_event($event_id, $conn = null)
     {
+        $event_id = (int)$event_id;
         $conn = $conn ?: Persistence::get_database_object();
         if (is_null($conn)) {
             return array("id" => null, "error" => "Couldn't get connection object.");
@@ -117,6 +119,7 @@ class Postmortem
      */
     static function undelete_event($event_id, $conn = null)
     {
+        $event_id = (int) $event_id;
         $conn = $conn ?: Persistence::get_database_object();
         if (is_null($conn)) {
             return array("id" => null, "error" => "Couldn't get connection object.");
@@ -126,8 +129,8 @@ class Postmortem
 
     /**
      * Determine if event is editable
-     * @param $event - event object returned from get_event
-     * @returns EDIT_UNLOCKED if editable, EDIT_LOCKED if a user is currently editing,
+     * @param array $event - event object returned from \Postmortem::get_event
+     * @return int EDIT_UNLOCKED if editable, EDIT_LOCKED if a user is currently editing,
      *  or EDIT_CLOSED if no longer editable
      */
     static function get_event_edit_status($event)
@@ -158,6 +161,7 @@ class Postmortem
      */
     static function set_event_edit_status($id, $conn = null)
     {
+        $id = (int) $id;
         $conn = $conn ?: Persistence::get_database_object();
         if (!$conn) {
             return null;
@@ -211,6 +215,7 @@ class Postmortem
      */
     static function get_tags_for_event($event_id, $conn = null)
     {
+        $event_id = (int)$event_id;
         $conn = $conn ?: Persistence::get_database_object();
         $columns = array('id', 'title');
         $table_name = 'tags';
@@ -231,8 +236,8 @@ class Postmortem
     /**
      * get all events that match at least one tag id.
      *
-     * @param $tag_ids - array of tag ids
-     * @param $conn - a PDO connection object
+     * @param array $tag_ids - array of tag ids
+     * @param PDO|null $conn - a PDO connection object
      *
      * @return array ( "status" => self::OK, "error" => "", "values" => array(events)) on success
      * and ( "status" => self::ERROR, "error" => "message", "values" => array() ) on failure
@@ -331,6 +336,7 @@ class Postmortem
      */
     static function save_tags_for_event($event_id, $tags, $conn = null)
     {
+        $event_id = (int)$event_id;
         $conn = $conn ?: Persistence::get_database_object();
         if (is_null($conn)) {
             return array(
@@ -391,6 +397,7 @@ class Postmortem
      */
     static function delete_tags_for_event($event_id, $conn = null)
     {
+        $event_id = (int)$event_id;
         $res = Postmortem::get_tags_for_event($event_id);
         if ($res == Persistence::ERROR) {
             return $res;
@@ -417,6 +424,8 @@ class Postmortem
      */
     static function delete_tag($tag_id, $event_id = null, $conn = null)
     {
+        $tag_id = (int)$tag_id;
+        $event_id = $event_id ? (int) $event_id : null;
         $conn = $conn ?: Persistence::get_database_object();
         if (is_null($conn)) {
             return array(
@@ -471,6 +480,8 @@ class Postmortem
      */
     static function undelete_tag($tag_id, $event_id = null, $conn = null)
     {
+        $tag_id = (int) $tag_id;
+        $event_id = $event_id ? (int) $event_id : null;
         $conn = $conn ?: Persistence::get_database_object();
         if (is_null($conn)) {
             return array(
@@ -516,16 +527,17 @@ class Postmortem
     /**
      * function to add a history row for an event
      *
-     * @param $event_id - ID of the postmortem the action was taken on
-     * @param $admin - LDAP name of the person taking the action
-     * @param $action - The action being taken (must be one of the ACTION_* class constants
-     * @param $conn - PDO connection object
+     * @param int $event_id - ID of the postmortem the action was taken on
+     * @param string $admin - LDAP name of the person taking the action
+     * @param string $action - The action being taken (must be one of the ACTION_* class constants
+     * @param PDO|null $conn - PDO connection object
      *
      * @return array ( "status" => self::OK ) on success
      * or ( "status" => self::ERROR, "error" => "an error message" ) on failure
      */
-    static function add_history($event, $admin, $action, $conn = null)
+    static function add_history($event_id, $admin, $action, $conn = null)
     {
+        $event_id = (int) $event_id;
         // validate action
         if (!in_array($action, array(self::ACTION_ADD, self::ACTION_EDIT))) {
             return array(
@@ -548,12 +560,12 @@ class Postmortem
             $stmt = $conn->prepare($sql);
             $stmt->execute(
                 array(
-                    "pid" => $event["id"],
+                    "pid" => $event_id["id"],
                     "admin" => $admin,
                     "action" => $action,
                     "date" => $now->getTimestamp(),
-                    "summary" => $event['summary'],
-                    "why_surprised" => $event['why_surprised'],
+                    "summary" => $event_id['summary'],
+                    "why_surprised" => $event_id['why_surprised'],
                 )
             );
         } catch (PDOException $e) {
@@ -565,14 +577,15 @@ class Postmortem
     /**
      * function to get all history records for a postmortem
      *
-     * @param $event_id - ID of the postmortem
-     * @param $conn - PDO connection object
+     * @param int $event_id - ID of the postmortem
+     * @param PDO|null $conn - PDO connection object
      *
-     * @returns array - Array containing an entry for each
+     * @return array - Array containing an entry for each
      * associated history record
      */
     static function get_history($event_id, $conn = null)
     {
+        $event_id = (int) $event_id;
         $conn = $conn ?: Persistence::get_database_object();
         if (is_null($conn)) {
             return array(
@@ -591,10 +604,11 @@ class Postmortem
      * @param $id - ID of the postmortem_history row
      * @param $conn - PDO connection object
      *
-     * @returns array - Array containing all data for specificed history record
+     * @return array - Array containing all data for specificed history record
      */
     static function get_history_event($id, $conn = null)
     {
+        $id = (int) $id;
         $conn = $conn ?: Persistence::get_database_object();
         if (is_null($conn)) {
             return array(
@@ -617,9 +631,9 @@ class Postmortem
     /**
      * function to translate a history record to a readable string
      *
-     * @param $history - Associative array corresponding to a history record
+     * @param array $history - Associative array corresponding to a history record
      *
-     * @returns string - A human readable string
+     * @return string - A human readable string
      */
     static function humanize_history($history)
     {
@@ -637,8 +651,7 @@ class Postmortem
 
     /**
      * Provide the different severity levels for a post mortem event
-     *
-     * @returns array of severity levels
+     * @return array of severity levels
      */
     static function get_severity_levels()
     {
