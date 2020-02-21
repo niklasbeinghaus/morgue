@@ -2,7 +2,7 @@
 
 <link rel="stylesheet" href="/features/calendar/css/calendar.css" />
 <script type="text/javascript">
-     var cal = {};
+     let cal = {};
      
      function loadCal() {
          <?php

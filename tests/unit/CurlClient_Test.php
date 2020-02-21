@@ -13,7 +13,7 @@ class CurlClientTest extends \PHPUnit\Framework\TestCase {
 
         $res = $this->curl_client->get("http://httpbin.org/get");
         $res = json_decode($res, true);
-        $this->assertEquals("https://httpbin.org/get", $res["url"]);
+        $this->assertEquals("http://httpbin.org/get", $res["url"]);
     }
 
     public function test_getWithTimeout() {

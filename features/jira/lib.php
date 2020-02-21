@@ -1,7 +1,7 @@
 <?php
 
-class Jira {
-
+class Jira
+{
     /** constants mapped from Persistence class */
     const OK = Persistence::OK;
     const ERROR = Persistence::ERROR;
@@ -13,10 +13,11 @@ class Jira {
      * @param $event_id - the numeric event id
      * @param $conn - a PDO connection object
      *
-     * @returns ( "status" => self::OK, "error" => "", "values" => array(tickets) ) on success
+     * @return array ( "status" => self::OK, "error" => "", "values" => array(tickets) ) on success
      * and ( "status" => self::ERROR, "error" => "message", "values" => array() ) on failure
      */
-    static function get_jira_tickets_for_event($event_id, $conn = null) {
+    static function get_jira_tickets_for_event($event_id, $conn = null)
+    {
         $conn = $conn ?: Persistence::get_database_object();
         $columns = array('id', 'ticket');
         $table = 'jira';
@@ -25,9 +26,11 @@ class Jira {
             'deleted' => 0,
         );
         if (is_null($conn)) {
-            return array("status" => self::ERROR,
+            return array(
+                "status" => self::ERROR,
                 "error" => "Couldn't get connection object.",
-                "values" => array());
+                "values" => array(),
+            );
         }
         return Persistence::get_array($columns, $where, $table, $conn);
     }
@@ -39,19 +42,27 @@ class Jira {
      * @param $tickets - array of ticket URLs to store
      * @param $conn - a PDO connection object
      *
-     * @returns ( "status" => self::OK ) on success
+     * @return array ( "status" => self::OK ) on success
      * or ( "status" => self::ERROR, "error" => "an error message" ) on failure
      */
-    static function save_jira_tickets_for_event($event_id, $tickets, $conn = null) {
+    static function save_jira_tickets_for_event($event_id, $tickets, $conn = null)
+    {
         $conn = $conn ?: Persistence::get_database_object();
         $table_name = 'jira';
         $assoc_column = 'ticket';
         if (is_null($conn)) {
-            return array("status" => self::ERROR,
-                "error" => "Couldn't get connection object.");
+            return array(
+                "status" => self::ERROR,
+                "error" => "Couldn't get connection object.",
+            );
         }
-        return Persistence::store_array($table_name, $assoc_column, $tickets,
-                                        $event_id, $conn);
+        return Persistence::store_array(
+            $table_name,
+            $assoc_column,
+            $tickets,
+            $event_id,
+            $conn
+        );
     }
 
     /**
@@ -60,14 +71,17 @@ class Jira {
      * @param $event_id - numeric ID of the event to delete for
      * @param $conn - a PDO connection object
      *
-     * @returns ( "status" => self::OK ) on success
+     * @return array ( "status" => self::OK ) on success
      * or ( "status" => self::ERROR, "error" => "an error message" ) on failure
      */
-    static function delete_jira_tickets_for_event($event_id, $conn = null) {
+    static function delete_jira_tickets_for_event($event_id, $conn = null)
+    {
         $conn = $conn ?: Persistence::get_database_object();
         if (is_null($conn)) {
-            return array("status" => self::ERROR,
-                "error" => "Couldn't get connection object.");
+            return array(
+                "status" => self::ERROR,
+                "error" => "Couldn't get connection object.",
+            );
         }
         return Persistence::flag_as_deleted('jira', 'postmortem_id', $event_id, $conn);
     }
@@ -78,18 +92,21 @@ class Jira {
      * @param $id - ID to get
      * @param $conn - PDO connection object (default: null)
      *
-     * @returns ( "status" => self::OK, "value" => $row ) on success
+     * @return array ( "status" => self::OK, "value" => $row ) on success
      * or ( "status" => self::ERROR, "error" => "an error message" ) on failure
      */
-    static function get_ticket($theid, $conn = null) {
+    static function get_ticket($id, $conn = null)
+    {
         $conn = $conn ?: Persistence::get_database_object();
         $columns = array('id', 'ticket');
         $table_name = 'jira';
         if (is_null($conn)) {
-            return array("status" => self::ERROR,
-                "error" => "Couldn't get connection object.");
+            return array(
+                "status" => self::ERROR,
+                "error" => "Couldn't get connection object.",
+            );
         }
-        return Persistence::get_association_by_id($columns, $table_name, $theid, $conn);
+        return Persistence::get_association_by_id($columns, $table_name, $id, $conn);
     }
 
     /**
@@ -98,16 +115,19 @@ class Jira {
      * @param $id - ID to delete
      * @param $conn - PDO connection object (default: null)
      *
-     * @returns ( "status" => self::OK ) on success
+     * @return array ( "status" => self::OK ) on success
      * or ( "status" => self::ERROR, "error" => "an error message" ) on failure
      */
-    static function delete_ticket($theid, $conn = null) {
+    static function delete_ticket($id, $conn = null)
+    {
         $conn = $conn ?: Persistence::get_database_object();
         if (is_null($conn)) {
-            return array("status" => self::ERROR,
-                "error" => "Couldn't get connection object.");
+            return array(
+                "status" => self::ERROR,
+                "error" => "Couldn't get connection object.",
+            );
         }
-        return Persistence::flag_as_deleted('jira', 'id', $theid, $conn);
+        return Persistence::flag_as_deleted('jira', 'id', $id, $conn);
     }
 
     /**
@@ -116,47 +136,46 @@ class Jira {
      * @param $id - ID to undelete
      * @param $conn - PDO connection object (default: null)
      *
-     * @returns ( "status" => self::OK ) on success
+     * @return array ( "status" => self::OK ) on success
      * or ( "status" => self::ERROR, "error" => "an error message" ) on failure
      */
-    static function undelete_ticket($theid, $conn = null) {
+    static function undelete_ticket($id, $conn = null)
+    {
         $conn = $conn ?: Persistence::get_database_object();
         $table_name = 'tickets';
         if (is_null($conn)) {
-            return array("status" => self::ERROR,
-                "error" => "Couldn't get connection object.");
+            return array(
+                "status" => self::ERROR,
+                "error" => "Couldn't get connection object.",
+            );
         }
-        return Persistence::flag_as_undeleted($table_name, 'postmortem_id', $theid, $conn);
+        return Persistence::flag_as_undeleted($table_name, 'postmortem_id', $id, $conn);
     }
 
     /**
-    * function to merge JIRA ticket info from the database with info from the
-    * JIRA API
-    *
-    * @param $tickets - array of JIRA ticket objects from the DB
-    * @param $curl - curl client to use (default: null)
-    *
-    * @returns array of merged JIRA tickets
-    */
-    static function merge_jira_tickets($tickets, $curl = null) {
+     * function to merge JIRA ticket info from the database with info from the
+     * JIRA API
+     *
+     * @param $tickets - array of JIRA ticket objects from the DB
+     * @param $curl - curl client to use (default: null)
+     *
+     * @return array of merged JIRA tickets
+     */
+    static function merge_jira_tickets($tickets, $curl = null)
+    {
         if (empty($tickets)) {
             return array();
         }
-
         $jira_tickets = array();
-
         if (is_null($curl)) {
             $curl = new CurlClient();
         }
-
         $tickets_ids = array();
-        foreach($tickets as $k => $v) {
+        foreach ($tickets as $k => $v) {
             array_push($tickets_ids, $v['ticket']);
         }
-
         $jira_client = new JiraClient($curl);
         $jira_info = $jira_client->getJiraTickets(array_values($tickets_ids));
-
         foreach ($tickets as $ticket) {
             $key = $ticket['ticket'];
             $id = $ticket['id'];
@@ -166,17 +185,14 @@ class Jira {
                 $jira_tickets[$key] = $ticket_info;
             }
         }
-
         return $jira_tickets;
-
     }
-
 }
 
-
-class JiraClient {
-
-    function __construct($curl_client, $config = null) {
+class JiraClient
+{
+    function __construct($curl_client, $config = null)
+    {
         $this->curl_client = $curl_client;
         $config = is_null($config) ? Configuration::get_configuration("jira") : $config;
         $this->jira_base_url = $config['baseurl'];
@@ -193,11 +209,13 @@ class JiraClient {
         }
     }
 
-    public function getJiraBaseUrl() {
+    public function getJiraBaseUrl()
+    {
         return $this->jira_base_url;
     }
 
-    public function getAdditionalIssueFields() {
+    public function getAdditionalIssueFields()
+    {
         return $this->additional_fields;
     }
 
@@ -205,31 +223,31 @@ class JiraClient {
      * Make a JQL query for all the issue keys passed as input and return the
      * JSON representation sent by the JIRA server
      *
-     * @param $jira_key_input ->  an array of trimmed JIRA ticket keys (i.e. 'CORE-1204')
-     * @param $field ->  an array of fields to retrieve for each issue
+     * @param array $jira_key_input ->  an array of trimmed JIRA ticket keys (i.e. 'CORE-1204')
+     * @param array $fields ->  an array of fields to retrieve for each issue
      *
-     * @return $jira_api_response, an array of json-decoded issues as returned by JIRA
+     * @return array $jira_api_response, an array of json-decoded issues as returned by JIRA
      */
-
-    function getJiraApiResponse($jira_key_input, $fields) {
+    function getJiraApiResponse($jira_key_input, $fields)
+    {
         $jira_api_responses = array();
-
         $tickets_count = count($jira_key_input);
         if ($tickets_count === 0) {
             return $jira_api_responses;
         }
-
         $params = array(
-            'jql' => 'issuekey in ("' .  implode($jira_key_input, '","') . '")',
+            'jql' => 'issuekey in ("' . implode($jira_key_input, '","') . '")',
             'maxResults' => $tickets_count,
-            'fields' => implode($fields, ',')
+            'fields' => implode($fields, ','),
         );
-
-        $response = $this->curl_client->get($this->getJiraBaseUrl() . '/rest/api/2/search' , $params, $this->username . ':' . $this->password, $this->proxy);
+        $response = $this->curl_client->get(
+            $this->getJiraBaseUrl() . '/rest/api/2/search',
+            $params,
+            $this->username . ':' . $this->password,
+            $this->proxy
+        );
         $jira_api_response = json_decode($response, true);
-
         return $jira_api_response;
-
     }
 
     /**
@@ -237,39 +255,34 @@ class JiraClient {
      * base field + addtional field, flatten each issue field and index
      * the return array by issue key
      *
-     * @param $jira_key_input -> same parameter given for getJiraApiResponse, $api_response -> defaults to null
+     * @param array $jira_key_input -> same parameter given for getJiraApiResponse, $api_response -> defaults to null
      *
-     * @return $jira_tickets an array where key is an jira ticket key (i.e. 'CORE-1204') and val is an array of jira ticket attributes, such as 'ticket_url' => 'https://jira.foo.com/CORE-1204'
+     * @param null $api_response
+     * @return array $jira_tickets an array where key is an jira ticket key (i.e. 'CORE-1204') and val is an array of jira ticket attributes, such as 'ticket_url' => 'https://jira.foo.com/CORE-1204'
      */
-
-    function getJiraTickets($jira_key_input, $api_response = null) {
+    function getJiraTickets($jira_key_input, $api_response = null)
+    {
         $raw_issues = array();
         $jira_tickets = array();
-
         $fields = array(
-            'key'      => 'key',
-            'summary'  => 'summary',
+            'key' => 'key',
+            'summary' => 'summary',
             'assignee' => 'assignee',
-            'status'   => 'status'
+            'status' => 'status',
         );
-
         $fields = $fields + $this->getAdditionalIssueFields();
-
         if (is_null($api_response)) {
             $api_response = $this->getJiraApiResponse($jira_key_input, $fields);
         }
-
         if (isset($api_response['issues'])) {
             $raw_issues = $api_response['issues'];
         }
-
         foreach ($raw_issues as $issue) {
             if (isset($issue['key'])) {
                 $key = $issue['key'];
                 $jira_tickets[$key] = $this->unpackTicketInfo($issue, $fields);
             }
         }
-
         return $jira_tickets;
     }
 
@@ -278,14 +291,14 @@ class JiraClient {
      * extract each field from the issue object and return the extracted
      * value as an associative array, along with the ticket_url
      *
-     * @param $ticket_info ->  json JIRA representation of an issue
-     * @param $field ->  an array of fields to retrieve for each issue
-     *
-     * @returns array of field->value for the issue
+     * @param string $ticket_info ->  json JIRA representation of an issue
+     * @param array $fields ->  an array of fields to retrieve for each issue
+     * @return array of field->value for the issue
      */
-    public function unpackTicketInfo($ticket_info, $fields) {
+    public function unpackTicketInfo($ticket_info, $fields)
+    {
         $ticket = array();
-        foreach($fields as $k => $v) {
+        foreach ($fields as $k => $v) {
             # set a default value
             $ticket[$k] = "";
             if (isset($ticket_info['fields'][$v])) {
@@ -300,8 +313,6 @@ class JiraClient {
         if (isset($ticket_info['key'])) {
             $ticket['ticket_url'] = $this->getJiraBaseUrl() . '/browse/' . $ticket_info['key'];
         }
-
         return $ticket;
     }
 }
-?>

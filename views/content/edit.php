@@ -1,4 +1,3 @@
-
 <?php if ($event['deleted']): ?>
     <div class="row-fluid">
         <div class="alert">

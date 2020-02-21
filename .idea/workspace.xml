@@ -1,18 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="13be9edc-5118-44da-89d9-17de349ddb5d" name="Default Changelist" comment="" />
+    <list default="true" id="13be9edc-5118-44da-89d9-17de349ddb5d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.codeclimate.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.travis.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CODE_OF_CONDUCT.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/docker.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/docker.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/anniversary/lib.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/anniversary/lib.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/anniversary/routes.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/anniversary/routes.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/anniversary/views/anniversary-mail.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/anniversary/views/anniversary-mail.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/anniversary/views/anniversary.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/anniversary/views/anniversary.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/calendar/lib.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/calendar/lib.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/calendar/routes.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/calendar/routes.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/calendar/views/calendar.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/calendar/views/calendar.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/calendar/views/calendar_page.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/calendar/views/calendar_page.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/contact/lib.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/contact/lib.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/contact/routes.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/facilitator/lib.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/facilitator/routes.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/facilitator/views/facilitator.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/facilitator/views/facilitator.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/history/lib.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/history/routes.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/history/routes.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/history/views/diff.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/history/views/diff.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/history/views/history.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/history/views/history.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/images/lib.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/images/lib.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/images/routes.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/images/routes.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/images/views/images.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/images/views/images.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/irc/lib.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/irc/lib.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/irc/routes.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/irc/routes.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/irc/views/irc.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/irc/views/irc.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/jira/lib.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/jira/lib.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/jira/routes.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/jira/routes.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/links/lib.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/links/lib.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/links/routes.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/links/routes.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/meeting_notes_link/lib.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/meeting_notes_link/routes.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/report/lib.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/search/routes.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/search/routes.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/slack/lib.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/slack/lib.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/slack/routes.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/slack/routes.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/status_time/lib.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/status_time/routes.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/status_time/views/status_time.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/status_time/views/status_time.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/summary/lib.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/summary/routes.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/tags/lib.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/tags/routes.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/tags/views/tags.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/tags/views/tags.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/tldr/lib.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/tldr/routes.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/tldr/routes.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/upload/lib.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/upload/lib.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/upload/lib/webdav.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/upload/lib/webdav.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/upload/routes.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/upload/routes.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/upload/views/upload.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/upload/views/upload.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/why_surprised/lib.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/why_surprised/routes.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/why_surprised/routes.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/why_surprised/views/why_surprised.php" beforeDir="false" afterPath="$PROJECT_DIR$/features/why_surprised/views/why_surprised.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/htdocs/assets/js/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/htdocs/assets/js/api.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/htdocs/assets/js/diff_match_patch.js" beforeDir="false" afterPath="$PROJECT_DIR$/htdocs/assets/js/diff_match_patch.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/htdocs/assets/js/edit.js" beforeDir="false" afterPath="$PROJECT_DIR$/htdocs/assets/js/edit.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/htdocs/assets/js/forums.js" beforeDir="false" afterPath="$PROJECT_DIR$/htdocs/assets/js/forums.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/htdocs/assets/js/images.js" beforeDir="false" afterPath="$PROJECT_DIR$/htdocs/assets/js/images.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/htdocs/assets/js/irc.js" beforeDir="false" afterPath="$PROJECT_DIR$/htdocs/assets/js/irc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/htdocs/assets/js/jira.js" beforeDir="false" afterPath="$PROJECT_DIR$/htdocs/assets/js/jira.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/htdocs/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/htdocs/index.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nginx/site.conf" beforeDir="false" afterPath="$PROJECT_DIR$/nginx/site.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phplib/AssetVersionMiddleware.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/phplib/Auth.php" beforeDir="false" afterPath="$PROJECT_DIR$/phplib/Auth.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phplib/Configuration.php" beforeDir="false" afterPath="$PROJECT_DIR$/phplib/Configuration.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phplib/CurlClient.php" beforeDir="false" afterPath="$PROJECT_DIR$/phplib/CurlClient.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phplib/Persistence.php" beforeDir="false" afterPath="$PROJECT_DIR$/phplib/Persistence.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phplib/Postmortem.php" beforeDir="false" afterPath="$PROJECT_DIR$/phplib/Postmortem.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phplib/deploy_version.php" beforeDir="false" afterPath="$PROJECT_DIR$/phplib/deploy_version.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/skeleton/feature_routes.php" beforeDir="false" afterPath="$PROJECT_DIR$/skeleton/feature_routes.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/CurlClient_Test.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/unit/CurlClient_Test.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/content/edit.php" beforeDir="false" afterPath="$PROJECT_DIR$/views/content/edit.php" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ComposerSettings" synchronizationState="SYNCHRONIZE">
+  <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/app/composer.json</pharConfigPath>
     <execution>
       <executable />
     </execution>
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="morgue" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -77,6 +157,8 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="reference.webide.settings.project.settings.php.debug" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -90,6 +172,16 @@
       </list>
     </option>
   </component>
+  <component name="RunManager">
+    <configuration name="Unnamed" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="sourceFilePath" value="docker-compose.yml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -101,6 +193,8 @@
       <option name="presentableId" value="Default" />
       <updated>1571772666646</updated>
       <workItem from="1571772667942" duration="5438000" />
+      <workItem from="1582208892462" duration="8746000" />
+      <workItem from="1582271713167" duration="12071000" />
     </task>
     <servers />
   </component>
@@ -112,10 +206,23 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/features/history/routes.php</url>
+          <line>14</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

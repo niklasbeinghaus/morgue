@@ -1,9 +1,12 @@
 version: '3.7'
 services:
   morgue:
-    build:
-      context: ./
-      dockerfile: Dockerfile
+    #build:
+     # context: ./
+      #dockerfile: Dockerfile
+    image: morgue:latest
+    volumes:
+     - ./:/usr/src/app
     depends_on:
       - morguedb
       - migrate

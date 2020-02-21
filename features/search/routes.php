@@ -1,11 +1,15 @@
 <?php
 
-$app->get('/search', function() use ($app) {
-        $q = $app->request->get('q');
-        $q = urldecode($q);
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
-        if($q === null || $q === "" || $q === "\"\""){
-            $app->redirect('/');
+$app->get(
+    '/search',
+    function (ServerRequestInterface $request, ResponseInterface $response) use ($app) {
+        $q = $request->getQueryParams()['q'];
+        $q = urldecode($q);
+        if ($q === null || $q === "" || $q === "\"\"") {
+            $app->redirect('/', '/');
         } else {
             $results = Search::perform($q);
             $content = "search/views/search";
@@ -13,4 +17,5 @@ $app->get('/search', function() use ($app) {
             $page_title = "Search Results";
             include "views/page.php";
         }
-});
+    }
+);

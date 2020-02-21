@@ -1,12 +1,17 @@
 <?php
 
-$app->get('/events/:id/why_surprised', function($id) use ($app) {
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+$app->get(
+    '/events/{id}/why_surprised',
+    function (ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
+        $id = (int)$id;
         $event = Postmortem::get_event($id);
-        
         if (is_null($event["id"])) {
-            $app->response->status(404);
-            return;
+            return $response->withStatus(404);
         }
         header("Content-Type: application/json");
         echo json_encode(array("why_surprised" => $event["why_surprised"]));
-});
+    }
+);

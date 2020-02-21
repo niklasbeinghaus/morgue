@@ -2,7 +2,6 @@
 /**
  * Version of the anniversay page suitble to email
  */
-
 print <<<CSS
     <base href="http://{$_SERVER['SERVER_NAME']}" />
     <style>
@@ -17,13 +16,12 @@ print <<<CSS
         }
     </style>
 CSS;
-
 $count = count($pms);
 if ($count) {
     if ($count === 1) {
         $outage = "an outage";
     } else {
-        $outage =  $count . " outages";
+        $outage = $count . " outages";
     }
     $subject = "$human_readable_date is the anniversary of {$outage}.";
     echo "<h3>${subject}</h3>";

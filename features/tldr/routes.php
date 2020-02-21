@@ -1,10 +1,13 @@
 <?php
 
-$app->get('/events/:id/tldr', function($id) use ($app) {
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+$app->get('/events/{id}/tldr', function(ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
+        $id = (int) $id;
         $event = Postmortem::get_event($id);
-        
         if (is_null($event["id"])) {
-            $app->response->status(404);
+            $response->withStatus(404);
             return;
         }
         header("Content-Type: application/json");

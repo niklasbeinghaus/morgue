@@ -1,8 +1,9 @@
 {
     "require": {
-        "slim/slim": "2.*",
-        "twig/twig": "1.*",
-         "wikimedia/composer-merge-plugin": "dev-master"
+        "slim/slim": "^3.0",
+        "twig/twig": "^3.0",
+         "wikimedia/composer-merge-plugin": "^1.4.1",
+        "dflydev/fig-cookies": "^2.0"
     },
     "extra": {
         "merge-plugin": {
