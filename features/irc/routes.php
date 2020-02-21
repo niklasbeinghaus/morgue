@@ -5,7 +5,8 @@ use Psr\Http\Message\ServerRequestInterface;
 
 $app->get(
     '/events/{id}/channels',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int)$args['id'];
         header("Content-Type: application/json");
         $channels = Irc::get_irc_channels_for_event($id);
         if ($channels["status"] == Irc::ERROR) {
@@ -18,12 +19,12 @@ $app->get(
 );
 $app->post(
     '/events/{id}/channels',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
         header("Content-Type: application/json");
         $channels = $request->getParsedBody()['channels'];
         $channels = explode(",", $channels);
         $channels = array_map('trim', $channels);
-        $id = (int)$id;
+        $id = (int)$args['id'];
         $res = Irc::save_irc_channels_for_event($id, $channels);
         if ($res["status"] == Irc::ERROR) {
             $response->withStatus(400);
@@ -41,7 +42,9 @@ $app->post(
 );
 $app->get(
     '/events/{id}/channels/{channel}',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id, $channel) use ($app) {
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int)$args['id'];
+        $channel = $args['channel'];
         header("Content-Type: application/json");
         $chan = Irc::get_channel($channel);
         if ($chan["status"] == Irc::ERROR) {
@@ -54,7 +57,9 @@ $app->get(
 );
 $app->delete(
     '/events/{id}/channels/{channel}',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id, $channel) use ($app) {
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int)$args['id'];
+        $channel = $args['channel'];
         header("Content-Type: application/json");
         $res = Irc::delete_channel($channel);
         if ($res["status"] == Irc::ERROR) {

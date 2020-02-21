@@ -117,7 +117,7 @@ class Irc
      */
     static function get_channel($id, $conn = null)
     {
-        $id = (int)$id;
+        $id = (int)$args['id'];
         $conn = $conn ?: Persistence::get_database_object();
         $columns = array('id', 'channel');
         $table_name = 'irc';
@@ -141,7 +141,7 @@ class Irc
      */
     static function delete_channel($id, $conn = null)
     {
-        $id = (int)$id;
+        $id = (int)$args['id'];
         $conn = $conn ?: Persistence::get_database_object();
         if (is_null($conn)) {
             return array(
@@ -163,7 +163,7 @@ class Irc
      */
     static function undelete_channel($id, $conn = null)
     {
-        $id = (int)$id;
+        $id = (int)$args['id'];
         $conn = $conn ?: Persistence::get_database_object();
         $table_name = 'irc';
         if (is_null($conn)) {

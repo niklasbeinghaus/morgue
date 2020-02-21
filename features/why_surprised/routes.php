@@ -5,8 +5,8 @@ use Psr\Http\Message\ServerRequestInterface;
 
 $app->get(
     '/events/{id}/why_surprised',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
-        $id = (int)$id;
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int)$args['id'];
         $event = Postmortem::get_event($id);
         if (is_null($event["id"])) {
             return $response->withStatus(404);

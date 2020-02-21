@@ -15,8 +15,8 @@ $app->get(
 );
 $app->get(
     "/calendar/facilitators/{id}",
-    function (ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
-        $id = (int) $id;
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int) $args['id'];
         header("Content-Type: application/json");
         $conn = Persistence::get_database_object();
         $facilitator = Calendar::get_facilitator($id, $conn);
@@ -33,8 +33,8 @@ $app->get(
 );
 $app->post(
     "/calendar/facilitators/{id}",
-    function (ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
-        $id = (int) $id;
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int) $args['id'];
         header("Content-Type: application/json");
         $conn = Persistence::get_database_object();
         $facilitator = [
@@ -53,8 +53,8 @@ $app->post(
 );
 $app->get(
     "/calendar/facilitators/request/{id}",
-    function (ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
-        $id = (int)$id;
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int)$args['id'];
         $config = Configuration::get_configuration('calendar');
         if (!$config["facilitator"]) {
             return;
@@ -93,7 +93,7 @@ $app->get(
 );
 $app->get(
     "/calendar/facilitators/add/{id}",
-    function (ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
 
         $config = Configuration::get_configuration('calendar');
         if (!$config["facilitator"]) {

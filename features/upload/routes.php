@@ -13,8 +13,8 @@ use Psr\Http\Message\ServerRequestInterface;
 
 $app->post(
     '/upload/{id}',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
-        $id = (int)$id;
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int)$args['id'];
         $ds = DIRECTORY_SEPARATOR;
         $config = Configuration::get_configuration();
         $upload_base_path = $config['upload_dir'];

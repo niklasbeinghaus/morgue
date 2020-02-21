@@ -5,7 +5,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 $app->get(
     '/events/{id}/images',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
         header("Content-Type: application/json");
         $images = Images::get_images_for_event($id);
         if ($images["status"] == Images::ERROR) {
@@ -19,7 +19,7 @@ $app->get(
 );
 $app->post(
     '/events/{id}/images',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
         header("Content-Type: application/json");
         $images = $request->getParsedBody()['images'];
         $images = explode(",", $images);
@@ -42,10 +42,10 @@ $app->post(
 );
 $app->get(
     '/events/{id}/images/{img}',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id, $img) use ($app) {
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
         header("Content-Type: application/json");
-        $id = (int)$id;
-        $img = (int)$img;
+        $id = (int)$args['id'];
+        $img = (int)$args['img'];
         $image = Images::get_image($img);
         if ($image["status"] == Images::ERROR) {
             $response->withStatus(404);
@@ -57,9 +57,9 @@ $app->get(
 );
 $app->delete(
     '/events/{id}/images/{image}',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id, $image) use ($app) {
-        $id = (int)$id;
-        $image = (int)$image;
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int)$args['id'];
+        $image = (int)$args['image'];
         header("Content-Type: application/json");
         $res = Images::delete_image($image);
         if ($res["status"] == Images::ERROR) {

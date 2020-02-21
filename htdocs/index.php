@@ -184,8 +184,8 @@ $app->post(
 );
 $app->get(
     '/events/{id}',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
-        $id = (int)$id;
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int)$args['id'];
         $event = Postmortem::get_event($id);
         if (is_null($event["id"])) {
             echo "loooool";
@@ -239,9 +239,9 @@ $app->get(
 );
 $app->delete(
     '/events/{id}',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
         header("Content-Type: application/json");
-        $id = (int)$id;
+        $id = (int)$args['id'];
         $result = Postmortem::delete_event($id);
         if ($result["status"] == Postmortem::ERROR) {
             $response->withStatus(500)->withHeader('error', json_encode($result["error"]));
@@ -253,8 +253,8 @@ $app->delete(
 );
 $app->get(
     '/events/{id}/undelete',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
-        $id = (int)$id;
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int)$args['id'];
         $result = Postmortem::undelete_event($id);
         if ($result["status"] == Postmortem::ERROR) {
             $response->withStatus(500)->withBody($result['error']);
@@ -266,8 +266,8 @@ $app->get(
 );
 $app->get(
     '/events/{id}/summary',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
-        $id = (int)$id;
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int)$args['id'];
         $event = Postmortem::get_event($id);
         if (is_null($event["id"])) {
             return $response->withStatus(404);
@@ -280,7 +280,7 @@ $app->get(
     '/events/{id}/lock',
     function ($id) use ($app) {
         header("Content-Type: application/json");
-        $id = (int)$id;
+        $id = (int)$args['id'];
         $event = Postmortem::get_event($id);
         $status = Postmortem::get_event_edit_status($event);
         if ($status === Postmortem::EDIT_UNLOCKED) {
@@ -292,8 +292,8 @@ $app->get(
 );
 $app->put(
     '/events/{id}',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
-        $id = (int)$id;
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int)$args['id'];
         // get the base event data
         $old_event = Postmortem::get_event($id);
         if (is_null($old_event["id"])) {
@@ -424,8 +424,8 @@ $app->put(
 );
 $app->post(
     '/events/{id}/history',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
-        $id = (int)$id;
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int)$args['id'];
         header("Content-Type: application/json");
         $action = $request->getParsedBody()['action'];
         $event = array(
@@ -442,8 +442,8 @@ $app->post(
 );
 $app->post(
     '/events/{id}/tags',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
-        $id = (int)$id;
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int)$args['id'];
         header("Content-Type: application/json");
         $tags = $request->getParsedBody()['tags'];
         $tags = explode(",", $tags);

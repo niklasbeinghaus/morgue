@@ -5,9 +5,9 @@ use Psr\Http\Message\ServerRequestInterface;
 
 $app->get(
     '/events/{id}/tickets',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
         header("Content-Type: application/json");
-        $id = (int)$id;
+        $id = (int)$args['id'];
         $tickets = Jira::get_jira_tickets_for_event($id);
         if ($tickets["status"] == Jira::ERROR) {
             $response->withStatus(404);
@@ -20,8 +20,8 @@ $app->get(
 );
 $app->post(
     '/events/{id}/tickets',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
-        $id = (int)$id;
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int)$args['id'];
         header("Content-Type: application/json");
         $curl = new CurlClient();
         $jira = new JiraClient($curl);
@@ -46,9 +46,9 @@ $app->post(
 );
 $app->get(
     '/events/{id}/tickets/{ticket}',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id, $ticket) use ($app) {
-        $id = (int)$id;
-        $ticket = (int)$ticket;
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int)$args['id'];
+        $ticket = (int)$args['ticket'];
         header("Content-Type: application/json");
         $tick = Jira::get_ticket($ticket);
         if ($tick["status"] == Jira::ERROR) {
@@ -61,8 +61,9 @@ $app->get(
 );
 $app->delete(
     '/events/{id}/tickets/{ticket}',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id, $ticket) use ($app) {
-        $id = (int)$id;
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int)$args['id'];
+        $ticket = $args['ticket'];
         header("Content-Type: application/json");
         $res = Jira::delete_ticket($ticket);
         if ($res["status"] == Jira::ERROR) {

@@ -5,8 +5,8 @@ use Psr\Http\Message\ServerRequestInterface;
 
 $app->get(
     '/events/{id}/slack-channels',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
-        $id = (int) $id;
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int) $args['id'];
         header("Content-Type: application/json");
         $channels = Slack::get_slack_channels_for_event($id);
         if ($channels["status"] == Slack::ERROR) {
@@ -18,11 +18,11 @@ $app->get(
 );
 $app->post(
     '/events/{id}/slack-channels',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
-        $id = (int)$id;
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int)$args['id'];
         header("Content-Type: application/json");
-        $channel_id = $app->request->post('channel_id');
-        $channel_name = $app->request->post('channel_name');
+        $channel_id = $request->getParsedBody()['channel_id'];
+        $channel_name = $request->getParsedBody()['channel_name'];
         $res = Slack::save_slack_channels_for_event($id, $channel_id, $channel_name);
         if ($res["status"] == Slack::ERROR) {
             $response->withStatus(400);
@@ -39,8 +39,9 @@ $app->post(
 );
 $app->get(
     '/events/{id}/slack-channels/{channel}',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id, $channel) use ($app) {
-        $id = (int)$id;
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int)$args['id'];
+        $channel = $args['channel'];
         header("Content-Type: application/json");
         $chan = Slack::get_channel($channel);
         if ($chan["status"] == Slack::ERROR) {
@@ -52,8 +53,9 @@ $app->get(
 );
 $app->delete(
     '/events/{id}/slack-channels/{channel}',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id, $channel) use ($app) {
-        $id = (int)$id;
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int)$args['id'];
+        $channel = $args['channel'];
         header("Content-Type: application/json");
         $res = Slack::delete_channel($channel);
         if ($res["status"] == Slack::ERROR) {
@@ -66,18 +68,18 @@ $app->delete(
 );
 $app->get(
     '/events/{id}/slack-channels-messages/{starttime}/{endtime}',
-    function (ServerRequestInterface $request, ResponseInterface $response, $id, $starttime, $endtime) use ($app) {
-        $id = (int)$id;
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int)$args['id'];
         header("Content-Type: application/html");
         $channels = Slack::get_slack_channels_for_event($id);
         if ($channels["status"] == Slack::ERROR) {
             $response->withStatus(404);
             return;
         }
-        $starttime = str_replace("-", "/", $starttime);
+        $starttime = str_replace("-", "/", $args['starttime']);
         $newStartDateTimeArr = date_parse($starttime);
         $newStartDateTime = $newStartDateTimeArr['year'] . "-" . $newStartDateTimeArr['month'] . "-" . $newStartDateTimeArr['day'] . " " . $newStartDateTimeArr['hour'] . ":" . $newStartDateTimeArr['minute'];
-        $endtime = str_replace("-", "/", $endtime);
+        $endtime = str_replace("-", "/", $args['endtime']);
         $newEndDateTimeArr = date_parse($endtime);
         $newEndDateTime = $newEndDateTimeArr['year'] . "-" . $newEndDateTimeArr['month'] . "-" . $newEndDateTimeArr['day'] . " " . $newEndDateTimeArr['hour'] . ":" . $newEndDateTimeArr['minute'];
         $curlClient = new CurlClient();

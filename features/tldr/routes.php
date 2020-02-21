@@ -3,8 +3,8 @@
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-$app->get('/events/{id}/tldr', function(ServerRequestInterface $request, ResponseInterface $response, $id) use ($app) {
-        $id = (int) $id;
+$app->get('/events/{id}/tldr', function(ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int) $args['id'];
         $event = Postmortem::get_event($id);
         if (is_null($event["id"])) {
             $response->withStatus(404);

@@ -5,8 +5,9 @@ use Psr\Http\Message\ServerRequestInterface;
 
 $app->get(
     '/history/{event_id}/{history_id}',
-    function (ServerRequestInterface $request, ResponseInterface $response, $event_id, $history_id) use ($app) {
-        $event_id = (int)$event_id;
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $event_id = (int)$args['event_id'];
+        $history_id = $args['history_id'];
         $event = Postmortem::get_event($event_id);
         $history = Postmortem::get_history_event($history_id);
         $timezone = getUserTimezone();

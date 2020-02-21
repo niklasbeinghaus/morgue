@@ -99,7 +99,7 @@ class Images
      */
     static function get_image($id, $conn = null)
     {
-        $id = (int) $id;
+        $id = (int) $args['id'];
         $conn = $conn ?: Persistence::get_database_object();
         $columns = array('id', 'image_link');
         $table_name = 'images';

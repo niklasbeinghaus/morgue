@@ -161,7 +161,7 @@ class Postmortem
      */
     static function set_event_edit_status($id, $conn = null)
     {
-        $id = (int) $id;
+        $id = (int) $args['id'];
         $conn = $conn ?: Persistence::get_database_object();
         if (!$conn) {
             return null;
@@ -608,7 +608,7 @@ class Postmortem
      */
     static function get_history_event($id, $conn = null)
     {
-        $id = (int) $id;
+        $id = (int) $args['id'];
         $conn = $conn ?: Persistence::get_database_object();
         if (is_null($conn)) {
             return array(
