@@ -1,7 +1,7 @@
 <!-- Calendar -->
 
 <link rel="stylesheet" href="/features/calendar/css/calendar.css" />
-<script type="text/javascript">
+<script type="text/javascript" crossorigin="anonymous">
      let cal = {};
      
      function loadCal() {

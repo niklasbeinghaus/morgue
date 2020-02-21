@@ -350,9 +350,9 @@
             foreach ($js_assets as $js_file) {
                 // check if asset exists on an external domain
                 if (strpos($js_file, "https://") === false && strpos($js_file, "http://") === false) {
-                    echo "<script type=\"text/javascript\" src=\"/features/{$feature_name}/js/{$js_file}\"></script>";
+                    echo "<script crossorigin='anonymous' type=\"text/javascript\" src=\"/features/{$feature_name}/js/{$js_file}\"></script>";
                 } else {
-                    echo "<script type=\"text/javascript\" src=\"{$js_file}\"></script>";
+                    echo "<script crossorigin='anonymous' type=\"text/javascript\" src=\"{$js_file}\"></script>";
                 }
             }
         }

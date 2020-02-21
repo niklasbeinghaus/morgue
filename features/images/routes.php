@@ -6,6 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 $app->get(
     '/events/{id}/images',
     function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = (int)$args['id'];
         header("Content-Type: application/json");
         $images = Images::get_images_for_event($id);
         if ($images["status"] == Images::ERROR) {
@@ -20,6 +21,7 @@ $app->get(
 $app->post(
     '/events/{id}/images',
     function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $id = $args['id'];
         header("Content-Type: application/json");
         $images = $request->getParsedBody()['images'];
         $images = explode(",", $images);

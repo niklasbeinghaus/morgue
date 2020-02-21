@@ -179,7 +179,8 @@ $app->post(
         if (isset($event['error'])) {
             error_log(print_r($event, true));
         }
-        $app->redirect('/', '/events/' . $event["id"]);
+        return $response->withStatus(302)->withHeader('Location', '/events/' . $event['id']);
+        //$app->redirect('', '/events/' . $event['id']);
     }
 );
 $app->get(

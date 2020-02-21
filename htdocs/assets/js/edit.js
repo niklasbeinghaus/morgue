@@ -1,9 +1,9 @@
-var EDIT_UNLOCKED = 0;
-var EDIT_LOCKED = 1;
-var EDIT_CLOSED = 2;
+const EDIT_UNLOCKED = 0;
+const EDIT_LOCKED = 1;
+const EDIT_CLOSED = 2;
 // update the lock every 60 seconds
-var EDIT_TIME = 10000;
-var edit_lock;
+const EDIT_TIME = 10000;
+let edit_lock;
 
 
 $("#add-status").on("click", show_status_fields);
