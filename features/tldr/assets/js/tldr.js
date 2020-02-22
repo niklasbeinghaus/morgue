@@ -1,4 +1,4 @@
-var old_tldr = null;
+let old_tldr = null;
 
 /**
  * get the raw markdown summary and display it in a textedit area instead of
@@ -6,7 +6,7 @@ var old_tldr = null;
  * param: optional text to append to the textedit area
  */
 function make_tldr_editable() {
-    var $tldr = $("#tldr");
+    let $tldr = $("#tldr");
 
     // if a textarea already, append to it
     if ($tldr.is('textarea')) {
@@ -16,10 +16,10 @@ function make_tldr_editable() {
 
         // if not a textarea already, create one and replace the original div with it
     } else {
-        $.getJSON(
+        $.get(
                   "/events/"+get_current_event_id()+"/tldr",
                   function(data) {
-                      var textarea = $("<textarea></textarea>")
+                      let textarea = $("<textarea></textarea>")
                           .attr({
                                   "id": "tldr",
                                   "name": "tldr",
@@ -41,16 +41,18 @@ function make_tldr_editable() {
  * save the markdown summary and render as HTML
  */
 function tldr_save(e, event, history) {
-    var new_tldr = $("#tldr").val();
+    let old_tldr = '';
+    let new_tldr = $("#tldr").val();
 
-    var Diff = new diff_match_patch();
-    var diff = Diff.diff_main(old_tldr, new_tldr);
+    let Diff = new diff_match_patch();
+
+    let diff = Diff.diff_main(old_tldr, new_tldr);
     Diff.diff_cleanupSemantic(diff);
     diff = Diff.diff_prettyHtml(diff);
     history.tldr = diff;
     event.tldr = new_tldr;
 
-    var html = $("<div></div>");
+    let html = $("<div></div>");
     html.attr("id", "tldr");
     html.attr("name", "tldr");
     html.attr("class", "input-xxlarge editable");
@@ -66,14 +68,14 @@ function tldr_save(e, event, history) {
  * just abort editing and display the stored data as rendered HTML
  */
 function tldr_undo_button() {
-    $.getJSON("/events/"+get_current_event_id()+"/tldr", function(data) {
+    $.get("/events/"+get_current_event_id()+"/tldr", function(data) {
             $('#tldr').val(data.tldr);
         });
 }
 
 $("#tldr").on("edit", make_tldr_editable);
 $("#tldr_undobutton").on("click", tldr_undo_button);
-$.getJSON("/events/"+get_current_event_id()+"/tldr", function(data) {
+$.get("/events/"+get_current_event_id()+"/tldr", function(data) {
         old_tldr = data.tldr;
     $("#tldr").html(markdown.toHTML(data.tldr));
 });

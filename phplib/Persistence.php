@@ -40,7 +40,7 @@ class Persistence
      * @param $conn - PDO connection object, will be newly instantiated when
      *                null (default: null)
      *
-     * @return the event map including an "id" field on success and a map of the
+     * @return array the event map including an "id" field on success and a map of the
      * form ( "id" => null, "error" => "an error message" ) on failure
      */
     static function save_event($postmortem, $conn = null)

@@ -1,4 +1,4 @@
-var old_summary = null;
+let old_summary = null;
 
 /**
  * get the raw markdown summary and display it in a textedit area instead of
@@ -6,7 +6,7 @@ var old_summary = null;
  * param: optional text to append to the textedit area
  */
 function make_summary_editable(text) {
-    var $summary = $("#summary");
+    let $summary = $("#summary");
 
     if (typeof text !== "string") {
         text = '';
@@ -22,10 +22,10 @@ function make_summary_editable(text) {
 
         // if not a textarea already, create one and replace the original div with it
     } else {
-        $.getJSON(
+        $.get(
                   "/events/"+get_current_event_id()+"/summary",
                   function(data) {
-                      var textarea = $("<textarea></textarea>")
+                      let textarea = $("<textarea></textarea>")
                           .attr({
                                   "id": "summary",
                                   "name": "summary",
@@ -46,16 +46,16 @@ function make_summary_editable(text) {
  * save the markdown summary and render as HTML
  */
 function summary_save(e, event, history) {
-    var new_summary = $("#summary").val();
+    let new_summary = $("#summary").val();
 
-    var Diff = new diff_match_patch();
-    var diff = Diff.diff_main(old_summary, new_summary);
+    let Diff = new diff_match_patch();
+    let diff = Diff.diff_main(old_summary, new_summary);
     Diff.diff_cleanupSemantic(diff);
     diff = Diff.diff_prettyHtml(diff);
     history.summary = diff;
     event.summary = new_summary;
 
-    var html = $("<div></div>");
+    let html = $("<div></div>");
     html.attr("id", "summary");
     html.attr("name", "summary");
     html.attr("class", "input-xxlarge editable");
@@ -71,14 +71,14 @@ function summary_save(e, event, history) {
  * just abort editing and display the stored data as rendered HTML
  */
 function summary_undo_button() {
-    $.getJSON("/events/"+get_current_event_id()+"/summary", function(data) {
+    $.get("/events/"+get_current_event_id()+"/summary", function(data) {
             $('#summary').val(data.summary);
         });
 }
 
 $("#summary").on("edit", make_summary_editable);
 $("#summaryundobutton").on("click", summary_undo_button);
-$.getJSON("/events/"+get_current_event_id()+"/summary", function(data) {
+$.get("/events/"+get_current_event_id()+"/summary", function(data) {
     old_summary = data.summary;
     $("#summary").html(markdown.toHTML(data.summary));
 });

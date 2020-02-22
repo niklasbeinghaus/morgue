@@ -394,12 +394,14 @@ function update_history(history) {
             show_save_status("History", true);
         },
         error: function () {
+            console.log(showError());
             show_save_status("History", false);
         }
     });
 }
 
 function update_event(event) {
+    console.log(event);
     let url = "/events/" + get_current_event_id();
     $.ajax({
         url: url,
@@ -409,6 +411,7 @@ function update_event(event) {
             show_save_status("Event", true);
         },
         error: function () {
+            console.log(showError());
             show_save_status("Event", false);
         }
     });

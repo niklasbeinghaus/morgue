@@ -1,7 +1,9 @@
 <?php
 
+use GuzzleHttp\Psr7\LazyOpenStream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Slim\Factory\AppFactory;
 
 require_once 'phplib/CurlClient.php';
 require_once 'phplib/Postmortem.php';
@@ -16,7 +18,7 @@ if (!$config) {
     include '../views/page.php';
     die();
 }
-$app = new \Slim\App(['settings' => $config]);
+$app = AppFactory::create();
 /**
  * helper method for returning the selected timezone.
  * If set, get the user timezone else get it from the global config
@@ -36,7 +38,12 @@ function getUserTimezone()
     return $tz;
 }
 
-// helper method to sort events reverse by starttime
+/**
+ * helper method to sort events reverse by starttime
+ * @param $first
+ * @param $second
+ * @return int
+ */
 function cmp($first, $second)
 {
     if ($first['starttime'] == $second['starttime']) {
@@ -45,9 +52,11 @@ function cmp($first, $second)
     return ($first['starttime'] < $second['starttime']) ? 1 : -1;
 }
 
-// helper method to format the difference between two dates
-// param: diff between two dates
-// returns: string
+/**
+ * helper method to format the difference between two dates
+ * @param $diff
+ * @return string
+ */
 function getTimeString($diff)
 {
     $min = floor($diff / 60 % 60);
@@ -97,7 +106,7 @@ $app->get(
     function (ServerRequestInterface $request, ResponseInterface $response) use ($app) {
         $content = 'content/frontpage';
         $show_sidebar = true;
-        $selected_tags = trim($request->getQueryParam('tags'));
+        $selected_tags = trim($request->getQueryParams()['tags']);
         if (strlen($selected_tags) > 0) {
             $selected_tags = explode(",", $selected_tags);
             $selected_tags = array_map('trim', $selected_tags);
@@ -109,9 +118,8 @@ $app->get(
         if ($events["status"] == Postmortem::OK) {
             $events = $events["values"];
         } else {
-            $response->withStatus(500);
-            echo json_encode($events["error"]);
-            return;
+            $response->getBody()->write(json_encode($events));
+            return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
         }
         uasort($events, 'cmp');
         $tags = Postmortem::get_tags();
@@ -121,13 +129,14 @@ $app->get(
             $tags = array();
         }
         include 'views/page.php';
+        return $response->withStatus(200);
     }
 );
 $app->post(
     '/timezone',
     function (ServerRequestInterface $request, ResponseInterface $response) use ($app) {
         $_SESSION['timezone'] = $request->getParsedBody()['timezone'];
-        $app->redirect('/', $request->getServerParams()['HTTP_REFERER']);
+        return $response->withStatus(302)->withHeader('location', $request->getServerParams()['HTTP_REFERER']);
     }
 );
 $app->post(
@@ -180,7 +189,6 @@ $app->post(
             error_log(print_r($event, true));
         }
         return $response->withStatus(302)->withHeader('Location', '/events/' . $event['id']);
-        //$app->redirect('', '/events/' . $event['id']);
     }
 );
 $app->get(
@@ -189,7 +197,7 @@ $app->get(
         $id = (int)$args['id'];
         $event = Postmortem::get_event($id);
         if (is_null($event["id"])) {
-            echo "loooool";
+            $response->getBody()->write('loooool');
             return $response->withStatus(404);
         }
         $page_title = sprintf("%s | Morgue", $event['title']);
@@ -236,20 +244,17 @@ $app->get(
         $curl_client = new CurlClient();
         $show_sidebar = false;
         include 'views/page.php';
+        return $response;
     }
 );
 $app->delete(
     '/events/{id}',
     function (ServerRequestInterface $request, ResponseInterface $response, $args) {
-        header("Content-Type: application/json");
         $id = (int)$args['id'];
         $result = Postmortem::delete_event($id);
-        error_log(json_encode($result));
-        if ($result["status"] == Postmortem::ERROR) {
-            return $response->withStatus(500)->withHeader('error', json_encode($result["error"]));
-        } else {
-            return $response->withStatus(204, 'Event successfully deleted');
-        }
+        $status = $result['status'] == Postmortem::ERROR ? 500 : 204;
+        $response->getBody()->write(json_encode($result));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus($status);
     }
 );
 $app->get(
@@ -258,7 +263,8 @@ $app->get(
         $id = (int)$args['id'];
         $result = Postmortem::undelete_event($id);
         if ($result["status"] == Postmortem::ERROR) {
-           return $response->withStatus(500)->withBody($result['error']);
+            $response->getBody()->write(json_encode($result));
+            return $response->withHeader('Content-Type', 'application/json');
         } else {
             $app->redirect("/", "/events/$id");
         }
@@ -272,27 +278,37 @@ $app->get(
         if (is_null($event["id"])) {
             return $response->withStatus(404);
         }
-        header("Content-Type: application/json");
-        echo json_encode(array("summary" => $event["summary"]));
+        $response->getBody()->write(json_encode(['summary' => $event['summary']]));
+        return $response->withHeader('Content-Type', 'application/json');
     }
 );
 $app->get(
     '/events/{id}/lock',
     function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
-        header("Content-Type: application/json");
         $id = (int)$args['id'];
         $event = Postmortem::get_event($id);
         $status = Postmortem::get_event_edit_status($event);
         if ($status === Postmortem::EDIT_UNLOCKED) {
             Postmortem::set_event_edit_status($id);
         }
-        $return = ["status" => $status, "modifier" => $event["modifier"]];
-        echo json_encode($return);
+        $response->getBody()->write(json_encode(["status" => $status, "modifier" => $event["modifier"]]));
+        return $response->withHeader('Content-Type', 'application/json');
     }
 );
 $app->put(
     '/events/{id}',
     function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        /**
+         * @param $params
+         * @param $response
+         * @return bool|ResponseInterface
+         */
+        function isTimezoneSet($params, ResponseInterface $response) {
+            if (!isset($params["timezone"])) {
+                return $response->withStatus(400);
+            }
+            return true;
+        }
         $id = (int)$args['id'];
         // get the base event data
         $old_event = Postmortem::get_event($id);
@@ -300,6 +316,9 @@ $app->put(
             return $response->withStatus(500);
         }
         $event = ["title" => $old_event["title"], "id" => $id];
+        //$response->getBody()->write(json_encode($request));
+        //return $response->withHeader('Content-Type','application/json');
+
         $params = $request->getParsedBody();
         foreach ($params as $key => $value) {
             switch ($key) {
@@ -320,9 +339,7 @@ $app->put(
                     break;
                 case "start_date":
                 case "start_time":
-                    if (!isset($params["timezone"])) {
-                        return $response->withStatus(400);
-                    }
+                    isTimezoneSet($params, $response);
                     $timezone = new DateTimeZone($params["timezone"]);
                     $starttime = isset($event["starttime"]) ? $event["starttime"] : $old_event["starttime"];
                     $edate = new DateTime("@$starttime");
@@ -337,9 +354,7 @@ $app->put(
                     break;
                 case "end_date":
                 case "end_time":
-                    if (!isset($params["timezone"])) {
-                        return $response->withStatus(400);
-                    }
+                    isTimezoneSet($params, $response);
                     $timezone = new DateTimeZone($params["timezone"]);
                     $endtime = isset($event["endtime"]) ? $event["endtime"] : $old_event["endtime"];
                     $edate = new DateTime("@$endtime");
@@ -354,9 +369,7 @@ $app->put(
                     break;
                 case "detect_date":
                 case "detect_time":
-                    if (!isset($params["timezone"])) {
-                        return $response->withStatus(400);
-                    }
+                    isTimezoneSet($params, $response);
                     $timezone = new DateTimeZone($params["timezone"]);
                     $detecttime = isset($event["detecttime"]) ? $event["detecttime"] : $old_event["detecttime"];
                     $edate = new DateTime("@$detecttime");
@@ -374,9 +387,7 @@ $app->put(
                         $event["statustime"] = 0;
                         break;
                     }
-                    if (!isset($params["timezone"])) {
-                        return $response->withStatus(400);
-                    }
+                    isTimezoneSet($params, $response);
                     $timezone = new DateTimeZone($params["timezone"]);
                     $statustime = $old_event["statustime"];
                     $edate = new DateTime("@$statustime");
@@ -384,7 +395,7 @@ $app->put(
                     $new_date = date_parse($value);
                     $edate->setTime($new_date["hour"], $new_date["minute"]);
                     $edate->setDate($new_date["year"], $new_date["month"], $new_date["day"]);
-                    $event["statustime"] = $edate->getTimeStamp();
+                    $event["statustime"] = $edate->getTimestamp();
                     break;
                 case "severity":
                     $event["severity"] = $value;
@@ -416,10 +427,10 @@ $app->put(
             }
         }
         $event = Postmortem::save_event($event);
-        if (is_null($event["id"])) {
+        if (is_null($event['id'])) {
             return $response->withStatus(500);
         }
-        $app->redirect('/', '/events/' . $event["id"], 201);
+        return $response->withHeader('Location', '/events/' . $event['id'])->withStatus(201);
     }
 );
 $app->post(
@@ -436,86 +447,81 @@ $app->post(
         // store history
         $env = $app->getContainer()['environment'];
         $admin = $env['admin']['username'];
-        Postmortem::add_history($event['id'], $admin, $action);
+        $result = Postmortem::add_history($event, $admin, $action);
+        $status = $result['status'] === Postmortem::ERROR ? 500 : 201;
+        $response->getBody()->write(json_encode($result));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus($status);
     }
 );
 $app->post(
     '/events/{id}/tags',
     function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
         $id = (int)$args['id'];
-        header("Content-Type: application/json");
         $tags = $request->getParsedBody()['tags'];
         $tags = explode(",", $tags);
         $tags = array_map('trim', $tags);
         $tags = array_map('strtolower', $tags);
         $res = Postmortem::save_tags_for_event($id, $tags);
         if ($res["status"] == Postmortem::ERROR) {
-            $response->withStatus(400);
+            return $response->withStatus(400);
         } else {
-            $response->withStatus(201);
             $tags = Postmortem::get_tags_for_event($id);
             if ($tags["status"] == Postmortem::ERROR) {
-                $response->withStatus(404);
-                return;
+                return $response->withStatus(404);
             } else {
                 $output = json_encode($tags["values"]);
-                echo str_replace("\\/", "/", $output);
+                $json = str_replace("\\/", "/", $output);
+                $response->getBody()->write(json_encode($json));
+                return $response->withHeader('Content-Type', 'application/json')->withStatus(201);
             }
         }
     }
 );
 $app->delete(
     '/events/{event_id}/tags/{tag_id}',
-    function (ServerRequestInterface $request, ResponseInterface $response, $event_id, $tag_id) use ($app) {
-        $event_id = (int)$event_id;
-        $tag_id = (int)$tag_id;
-        header("Content-Type: application/json");
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $event_id = (int)$args['event_id'];
+        $tag_id = (int)$args['tag_id'];
         $res = Postmortem::delete_tag($tag_id, $event_id);
-        if ($res["status"] == Postmortem::ERROR) {
-            $response->withStatus(500)->withBody($res["error"]);
-        } else {
-            $response->withStatus(204);
-        }
-        return $response;
+        $status = $res['status'] == Postmortem::ERROR ? 500 : 200;
+        $response->getBody()->write(json_encode($res));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus($status);
     }
 );
 $app->get(
     '/ping',
-    function () use ($app) {
-        header("Content-Type: application/json");
-        echo json_encode(array('status' => 'ok'));
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+        $response->getBody()->write(json_encode(['status' => 'ok']));
+        return $response->withHeader('Content-Type', 'application/json');
     }
 );
 // Handle custom static assets.
 // Javascript first then CSS.
 $app->get(
     '/features/{feature}/js/{path}',
-    function (ServerRequestInterface $request, ResponseInterface $response, $feature, $path) use ($app) {
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
         // read the file if it exists. Then serve it back.
-        $file = stream_resolve_include_path("features/{$feature}/assets/js/{$path}");
+        $file = stream_resolve_include_path('features/'. $args['feature'] . '/assets/js/' . $args['path']);
         if (!$file) {
-            $response->withStatus(404);
-            $app->log->error("couldn't file custom js asset at $path");
-            return $response;
+            return $response->withStatus(404);
         }
-        $thru_file = file_get_contents($file);
-        $response->withHeader("Content-Type", "application/javascript");
-        print $thru_file;
-        return $response;
+        return $response->withHeader("Content-Type", "application/javascript")->withBody(
+            (new LazyOpenStream($file, 'r'))
+        );
     }
 );
 $app->get(
     '/features/{feature}/css/{path}',
-    function (ServerRequestInterface $request, ResponseInterface $response, $feature, $path) use ($app) {
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
         // read the file if it exists. Then serve it back.
-        $file = stream_resolve_include_path("features/{$feature}/assets/css/{$path}");
+        $file = stream_resolve_include_path('features/' . $args['feature'] . '/assets/css/' . $args['path']);
         if (!$file) {
             return $response->withStatus(404);
         }
-        $thru_file = file_get_contents($file);
-        $response->withHeader("Content-Type", "text/css");
-        print $thru_file;
-        return $response;
+        return $response->withHeader("Content-Type", "text/css")->withBody(
+            (new LazyOpenStream($file, 'r'))
+        );
     }
 );
+session_start();
 $app->run();

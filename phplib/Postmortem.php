@@ -1,4 +1,7 @@
 <?php
+
+use Slim\Factory\AppFactory;
+
 require_once('Persistence.php');
 
 /**
@@ -30,7 +33,6 @@ class Postmortem
      *                 - detecttime  => detect time as unix timestamp
      * @param PDO|null $conn - PDO connection object, will be newly instantiated when
      *                null (default: null)
-     *
      * @return array $event the event map including an "id" field on success and a map of the
      * form ( "id" => null, "error" => "an error message" ) on failure
      */
@@ -50,10 +52,9 @@ class Postmortem
             return $event;
         }
         if ($action == self::ACTION_ADD) {
-            $app = (new \Slim\App)->getContainer();
-            $env = $app->environment;
-            $admin = $env['admin']['username'];
-            $result = Postmortem::add_history($event, $admin, $action);
+            $admin = MorgueAuth::get_auth_data()['username'];
+            Postmortem::add_history($event, $admin, $action);
+            return $event;
         }
         // close connection and return
         $conn = null;
@@ -527,7 +528,7 @@ class Postmortem
     /**
      * function to add a history row for an event
      *
-     * @param array $event_id - ID of the postmortem the action was taken on
+     * @param array $event - ID of the postmortem the action was taken on
      * @param string $admin - LDAP name of the person taking the action
      * @param string $action - The action being taken (must be one of the ACTION_* class constants
      * @param PDO|null $conn - PDO connection object
@@ -535,9 +536,8 @@ class Postmortem
      * @return array ( "status" => self::OK ) on success
      * or ( "status" => self::ERROR, "error" => "an error message" ) on failure
      */
-    static function add_history($event_id, $admin, $action, $conn = null)
+    static function add_history($event, $admin, $action, $conn = null)
     {
-        $event_id = (int) $event_id;
         // validate action
         if (!in_array($action, array(self::ACTION_ADD, self::ACTION_EDIT))) {
             return array(
@@ -560,12 +560,12 @@ class Postmortem
             $stmt = $conn->prepare($sql);
             $stmt->execute(
                 array(
-                    "pid" => $event_id["id"],
+                    "pid" => $event["id"],
                     "admin" => $admin,
                     "action" => $action,
                     "date" => $now->getTimestamp(),
-                    "summary" => $event_id['summary'],
-                    "why_surprised" => $event_id['why_surprised'],
+                    "summary" => $event['summary'],
+                    "why_surprised" => $event['why_surprised'],
                 )
             );
         } catch (PDOException $e) {

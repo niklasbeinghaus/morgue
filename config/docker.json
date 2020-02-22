@@ -1,7 +1,6 @@
 {
     "environment": "development",
     "timezone": "Europe/Berlin",
-    "displayErrorDetails": "true",
     "severity" :
     { "tooltip_title" : "Severity Levels",
       "levels" : [

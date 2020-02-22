@@ -25,8 +25,9 @@ $app->get(
         } else {
             $anivs = 0;
         }
-        header("Content-Type: application/json");
-        echo json_encode(array("anniversaries_today" => $anivs));
+        $output = json_encode(['anniversaries_today' => $anivs]);
+        $response->getBody()->write($output);
+        return $response->withHeader('Content-Type', 'application/json');
     }
 );
 $app->get(
@@ -55,7 +56,7 @@ $app->get(
             $message = $pm_ids['error'];
             $content = "error";
             include 'views/page.php';
-            return;
+            return $response->withStatus(500);
         }
         if (count($pms)) {
             // get the tags for each PM we found so we can display them
@@ -66,17 +67,18 @@ $app->get(
         }
         $pms = $pms;
         include 'views/page.php';
+        return $response->withStatus(200);
     }
 );
 $app->get(
     '/anniversary/mail',
-    function () use ($app) {
+    function (ServerRequestInterface $request, ResponseInterface $response) use ($app) {
         $config = Configuration::get_configuration('anniversary');
         if ($config['enabled'] !== 'on') {
-            return;
+            return $response->withStatus(412);
         }
         if (empty($config['mailto'])) {
-            return;
+            return $response->withStatus(400);
         }
         $content = "anniversary/views/anniversary-mail";
         $show_sidebar = false;
@@ -100,7 +102,7 @@ $app->get(
             $message = $pm_ids['error'];
             $content = "error";
             include 'views/page.php';
-            return;
+            return $response->withStatus(500);
         }
         if (count($pms)) {
             // get the tags for each PM we found so we can display them
@@ -128,6 +130,7 @@ $app->get(
         } else {
             print "Nothing broke on this date.";
         }
+        return $response->withStatus(200);
     }
 );
 

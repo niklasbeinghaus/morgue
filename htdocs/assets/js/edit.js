@@ -42,7 +42,6 @@ $('#delete-initial').click(function (ev) {
 });
 
 $("#delete-yes").click(function (ev) {
-    console.log(ev);
     ev.preventDefault();
     delete_event(function (data, textStatus, jqXHR) {
         if (jqXHR.status === 204) {
@@ -113,9 +112,7 @@ function save_page() {
     let hist = {};
     let event = {};
     hist.action = 'edit';
-
     $(".editable").trigger("save", [event, hist]);
-
     $(".editable_hidden").hide();
     $("input.editable").prop("disabled", true);
     $("select.editable").prop("disabled", true);
@@ -123,7 +120,7 @@ function save_page() {
     update_history(hist);
     update_event(event);
 
-    var edit_div = $("<div></div>");
+    let edit_div = $("<div></div>");
     edit_div.attr({
         "id": "edit_div",
         "class": "alert alert-info",
@@ -134,8 +131,7 @@ function save_page() {
 }
 
 $("#edit_status").click(function (ev) {
-    var in_edit = ($('#edit_div').html() == "Save Changes");
-
+    let in_edit = ($('#edit_div').html() === "Save Changes");
     if (in_edit) {
         save_page();
     } else {
@@ -143,9 +139,9 @@ $("#edit_status").click(function (ev) {
     }
 });
 
-var edit_window = $(window);
-var edit_status = $('#edit_status');
-var edit_top = edit_status.offset().top;
+let edit_window = $(window);
+let edit_status = $('#edit_status');
+let edit_top = edit_status.offset().top;
 
 edit_window.scroll(function () {
     edit_status.toggleClass('sticky', edit_window.scrollTop() > edit_top);

@@ -11,7 +11,7 @@ $app->get(
         if (is_null($event["id"])) {
             return $response->withStatus(404);
         }
-        header("Content-Type: application/json");
-        echo json_encode(array("why_surprised" => $event["why_surprised"]));
+        $response->getBody()->write(json_encode($event['why_surprised']));
+        return $response->withHeader('Content-Type', 'application/json');
     }
 );
