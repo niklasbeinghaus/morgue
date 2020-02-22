@@ -527,7 +527,7 @@ class Postmortem
     /**
      * function to add a history row for an event
      *
-     * @param int $event_id - ID of the postmortem the action was taken on
+     * @param array $event_id - ID of the postmortem the action was taken on
      * @param string $admin - LDAP name of the person taking the action
      * @param string $action - The action being taken (must be one of the ACTION_* class constants
      * @param PDO|null $conn - PDO connection object

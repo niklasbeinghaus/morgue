@@ -385,7 +385,7 @@ function update_resolve_time() {
 }
 
 function update_history(history) {
-    var url = "/events/" + get_current_event_id() + "/history";
+    let url = "/events/" + get_current_event_id() + "/history";
     $.ajax({
         url: url,
         data: history,
@@ -400,7 +400,7 @@ function update_history(history) {
 }
 
 function update_event(event) {
-    var url = "/events/" + get_current_event_id();
+    let url = "/events/" + get_current_event_id();
     $.ajax({
         url: url,
         data: event,

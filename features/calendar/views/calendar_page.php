@@ -2,8 +2,9 @@
 
 <link rel="stylesheet" href="/features/calendar/css/calendar.css" />
 <script type="text/javascript" crossorigin="anonymous">
-     let cal = {};
-     
+    if (!cal.defined) {
+        let cal = {};
+    }
      function loadCal() {
          <?php
              $cal = new Calendar;

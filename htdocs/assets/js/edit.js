@@ -42,9 +42,10 @@ $('#delete-initial').click(function (ev) {
 });
 
 $("#delete-yes").click(function (ev) {
+    console.log(ev);
     ev.preventDefault();
     delete_event(function (data, textStatus, jqXHR) {
-        if (jqXHR.status == 204) {
+        if (jqXHR.status === 204) {
             window.location = '/';
         }
     })
@@ -64,15 +65,13 @@ $(":input").keyup(function (e) {
 });
 
 function update_lock() {
-    $.getJSON("/events/" + get_current_event_id() + "/lock", function (data) {
-        return;
+    return $.getJSON("/events/" + get_current_event_id() + "/lock", function (data) {
     });
 }
 
 function make_editable() {
     $.getJSON("/events/" + get_current_event_id() + "/lock", function (data) {
-        var edit_div = $("<div></div>");
-
+        let edit_div = $("<div></div>");
         if (data.status === EDIT_UNLOCKED) {
             $(".editable").removeAttr("disabled");
             $(".editable_hidden").show();
@@ -111,8 +110,8 @@ function make_editable() {
 
 function save_page() {
     clearInterval(edit_lock);
-    event = {};
-    hist = {};
+    let hist = {};
+    let event = {};
     hist.action = 'edit';
 
     $(".editable").trigger("save", [event, hist]);

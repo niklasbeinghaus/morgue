@@ -240,16 +240,16 @@ $app->get(
 );
 $app->delete(
     '/events/{id}',
-    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) {
         header("Content-Type: application/json");
         $id = (int)$args['id'];
         $result = Postmortem::delete_event($id);
+        error_log(json_encode($result));
         if ($result["status"] == Postmortem::ERROR) {
-            $response->withStatus(500)->withHeader('error', json_encode($result["error"]));
+            return $response->withStatus(500)->withHeader('error', json_encode($result["error"]));
         } else {
-            $response->withStatus(204);
+            return $response->withStatus(204, 'Event successfully deleted');
         }
-        return;
     }
 );
 $app->get(
@@ -258,11 +258,10 @@ $app->get(
         $id = (int)$args['id'];
         $result = Postmortem::undelete_event($id);
         if ($result["status"] == Postmortem::ERROR) {
-            $response->withStatus(500)->withBody($result['error']);
+           return $response->withStatus(500)->withBody($result['error']);
         } else {
             $app->redirect("/", "/events/$id");
         }
-        return;
     }
 );
 $app->get(
@@ -279,7 +278,7 @@ $app->get(
 );
 $app->get(
     '/events/{id}/lock',
-    function ($id) use ($app) {
+    function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
         header("Content-Type: application/json");
         $id = (int)$args['id'];
         $event = Postmortem::get_event($id);
@@ -301,7 +300,7 @@ $app->put(
             return $response->withStatus(500);
         }
         $event = ["title" => $old_event["title"], "id" => $id];
-        $params = $request->getServerParams();
+        $params = $request->getParsedBody();
         foreach ($params as $key => $value) {
             switch ($key) {
                 case "title":
@@ -437,8 +436,7 @@ $app->post(
         // store history
         $env = $app->getContainer()['environment'];
         $admin = $env['admin']['username'];
-        $result = Postmortem::add_history($event, $admin, $action);
-        echo json_encode($result);
+        Postmortem::add_history($event['id'], $admin, $action);
     }
 );
 $app->post(
