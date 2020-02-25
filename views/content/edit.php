@@ -236,7 +236,7 @@
             $feature = Configuration::get_configuration($feature_name);
 
             if ($feature['enabled'] == "on") {
-                $view_file = 'features/' . $feature['name'] . '/views/' . $feature['name'] . '.php';
+                $view_file = '../features/' . $feature['name'] . '/views/' . $feature['name'] . '.php';
                 // Walk the include path looking for our view file.
                 $view_path_exists = stream_resolve_include_path($view_file);
                 if ($view_path_exists) {

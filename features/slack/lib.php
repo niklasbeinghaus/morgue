@@ -1,6 +1,6 @@
 <?php
-include 'slack/lib/message_formatter.php';
-include 'slack/lib/date_time_util.php';
+include 'lib/message_formatter.php';
+include 'lib/date_time_util.php';
 
 class Slack
 {

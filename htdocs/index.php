@@ -5,11 +5,11 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Factory\AppFactory;
 
-require_once 'phplib/CurlClient.php';
-require_once 'phplib/Postmortem.php';
-require_once 'phplib/Configuration.php';
-require_once 'phplib/Auth.php';
-require_once 'vendor/autoload.php';
+require_once '../phplib/CurlClient.php';
+require_once '../phplib/Postmortem.php';
+require_once '../phplib/Configuration.php';
+require_once '../phplib/Auth.php';
+require_once '../vendor/autoload.php';
 $config = Configuration::get_configuration();
 if (!$config) {
     $message = "Could not parse configuration file.";
@@ -128,7 +128,7 @@ $app->get(
         } else {
             $tags = array();
         }
-        include 'views/page.php';
+        include '../views/page.php';
         return $response->withStatus(200);
     }
 );
@@ -243,7 +243,7 @@ $app->get(
         $content = 'content/edit';
         $curl_client = new CurlClient();
         $show_sidebar = false;
-        include 'views/page.php';
+        include '../views/page.php';
         return $response;
     }
 );

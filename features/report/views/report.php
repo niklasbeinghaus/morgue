@@ -10,5 +10,5 @@ echo ($days_back === 1) ? 'day' : 'days';
 ?></h3>
 <?php
 
-include "views/content/frontpage.php";
+include __DIR__ . "/../../../views/content/frontpage.php";
 

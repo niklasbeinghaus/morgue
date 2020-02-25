@@ -7,27 +7,28 @@ $app->get(
     "/calendar",
     function () use ($app) {
 
-        $content = "calendar/views/calendar_page";
+        $content = "../features/calendar/views/calendar_page";
         $show_sidebar = false;
         $page_title = "Post Mortem Calendar";
-        include "views/page.php";
+        include __DIR__ . "/../../views/page.php";
     }
 );
 $app->get(
     "/calendar/facilitators/{id}",
     function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
         $id = (int) $args['id'];
-        header("Content-Type: application/json");
         $conn = Persistence::get_database_object();
         $facilitator = Calendar::get_facilitator($id, $conn);
         if ($facilitator["status"] === Persistence::OK) {
             if (count($facilitator["values"]) === 1) {
-                echo json_encode($facilitator["values"][0]);
+                $response->getBody()->write(json_encode($facilitator["values"][0]));
+                return $response->withHeader('Content-Type', 'application/json');
             } else {
-                echo json_encode($facilitator["values"]);
+                $response->getBody()->write(json_encode($facilitator["values"]));
+                return $response->withHeader('Content-Type', 'application/json');
             }
         } else {
-            $response->withStatus(404);
+            return $response->withStatus(404);
         }
     }
 );
@@ -35,7 +36,6 @@ $app->post(
     "/calendar/facilitators/{id}",
     function (ServerRequestInterface $request, ResponseInterface $response, $args) use ($app) {
         $id = (int) $args['id'];
-        header("Content-Type: application/json");
         $conn = Persistence::get_database_object();
         $facilitator = [
             "name" => $request->getParsedBody()['name'],
@@ -43,11 +43,11 @@ $app->post(
         ];
         $error = Calendar::set_facilitator($id, $facilitator, $conn);
         if (!$error) {
-            $response->withStatus(201);
-            echo json_encode($facilitator);
+            $response->getBody()->write(json_encode($facilitator));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(201);
         } else {
-            echo $error;
-            return $response->withStatus(400);;
+            $response->getBody()->write(json_encode($error));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
         }
     }
 );
@@ -57,7 +57,7 @@ $app->get(
         $id = (int)$args['id'];
         $config = Configuration::get_configuration('calendar');
         if (!$config["facilitator"]) {
-            return;
+            return $response->withStatus(404);
         }
         $conn = Persistence::get_database_object();
         $event = Postmortem::get_event($id, $conn);
@@ -84,11 +84,10 @@ $app->get(
         $headers .= "From: {$from}" . "\r\n";
         $ok = mail($to, $subject, $message, $headers);
         if ($ok) {
-            echo "Mail sent!";
+            return $response->withStatus('200');
         } else {
-            echo "Error sending mail";
+            return $response->withStatus('500');
         }
-        return;
     }
 );
 $app->get(
@@ -123,10 +122,9 @@ $app->get(
             $headers .= 'Content-type: text/html; charset=UTF-8' . "\r\n";
             $headers .= "From: {$from}" . "\r\n";
             $ok = mail($to, $subject, $message, $headers);
-            $app->redirect('/', '/events/' . $id . '#calendar');
         } else {
             return $response->withStatus(500);
         }
-        return;
+        $app->redirect('/', '/events/' . $id . '#calendar');
     }
 );

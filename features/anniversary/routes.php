@@ -34,7 +34,7 @@ $app->get(
     '/anniversary',
     function (ServerRequestInterface $request, ResponseInterface $response) use ($app) {
 
-        $content = "anniversary/views/anniversary";
+        $content = "../features/anniversary/views/anniversary";
         $show_sidebar = false;
         $page_title = "Today in Post Mortem History";
         $today = date("Y-m-d", time());
@@ -55,7 +55,7 @@ $app->get(
         } else {
             $message = $pm_ids['error'];
             $content = "error";
-            include 'views/page.php';
+            include __DIR__ . '/../../views/page.php';
             return $response->withStatus(500);
         }
         if (count($pms)) {
@@ -66,7 +66,7 @@ $app->get(
             }
         }
         $pms = $pms;
-        include 'views/page.php';
+        include __DIR__ . '/../../views/page.php';
         return $response->withStatus(200);
     }
 );
@@ -101,7 +101,7 @@ $app->get(
         } else {
             $message = $pm_ids['error'];
             $content = "error";
-            include 'views/page.php';
+            include __DIR__ . '/../../views/page.php';
             return $response->withStatus(500);
         }
         if (count($pms)) {
