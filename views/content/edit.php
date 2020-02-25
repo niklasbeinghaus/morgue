@@ -1,4 +1,3 @@
-
 <?php if ($event['deleted']): ?>
     <div class="row-fluid">
         <div class="alert">
@@ -237,7 +236,7 @@
             $feature = Configuration::get_configuration($feature_name);
 
             if ($feature['enabled'] == "on") {
-                $view_file = 'features/' . $feature['name'] . '/views/' . $feature['name'] . '.php';
+                $view_file = '../features/' . $feature['name'] . '/views/' . $feature['name'] . '.php';
                 // Walk the include path looking for our view file.
                 $view_path_exists = stream_resolve_include_path($view_file);
                 if ($view_path_exists) {
@@ -351,9 +350,9 @@
             foreach ($js_assets as $js_file) {
                 // check if asset exists on an external domain
                 if (strpos($js_file, "https://") === false && strpos($js_file, "http://") === false) {
-                    echo "<script type=\"text/javascript\" src=\"/features/{$feature_name}/js/{$js_file}\"></script>";
+                    echo "<script crossorigin='anonymous' type=\"text/javascript\" src=\"/features/{$feature_name}/js/{$js_file}\"></script>";
                 } else {
-                    echo "<script type=\"text/javascript\" src=\"{$js_file}\"></script>";
+                    echo "<script crossorigin='anonymous' type=\"text/javascript\" src=\"{$js_file}\"></script>";
                 }
             }
         }

@@ -4,7 +4,7 @@
  */
 $app->get('/report', function () use ($app) {
 
-    $content = "report/views/report";
+    $content = "../features/report/views/report";
 
     $page_title = "report";
     $show_sidebar = false;
@@ -24,9 +24,9 @@ $app->get('/report', function () use ($app) {
     } else {
         $content = 'error';
         $message = $results['error'];
-        include "views/page.php";
+        include __DIR__ . "../../views/page.php";
         return;
     }
 
-    include "views/page.php";
+    include __DIR__ . "/../../views/page.php";
 });

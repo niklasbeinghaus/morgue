@@ -1,9 +1,9 @@
-var EDIT_UNLOCKED = 0;
-var EDIT_LOCKED = 1;
-var EDIT_CLOSED = 2;
+const EDIT_UNLOCKED = 0;
+const EDIT_LOCKED = 1;
+const EDIT_CLOSED = 2;
 // update the lock every 60 seconds
-var EDIT_TIME = 10000;
-var edit_lock;
+const EDIT_TIME = 10000;
+let edit_lock;
 
 
 $("#add-status").on("click", show_status_fields);
@@ -26,95 +26,93 @@ $("#gcal").on("save", update_gcal_for_event);
 $("#contact").on("save", update_contact_for_event);
 
 $('.datepicker')
-  .datepicker({
-    format: 'mm/dd/yyyy'
-  });
+    .datepicker({
+        format: 'mm/dd/yyyy'
+    });
 
 $('.timeentry')
-  .timeEntry({
-    spinnerImage: ''
-  });
+    .timeEntry({
+        spinnerImage: ''
+    });
 
-$('#delete-initial').click(function(ev) {
-  ev.preventDefault();
-  $(this).hide();
-  $("#delete_button_confirmation_container").show();
+$('#delete-initial').click(function (ev) {
+    ev.preventDefault();
+    $(this).hide();
+    $("#delete_button_confirmation_container").show();
 });
 
-$("#delete-yes").click(function(ev) {
-  ev.preventDefault();
-  delete_event(function(data, textStatus, jqXHR) {
-    if (jqXHR.status == 204) {
-      window.location = '/';
-    }
-  })
+$("#delete-yes").click(function (ev) {
+    ev.preventDefault();
+    delete_event(function (data, textStatus, jqXHR) {
+        if (jqXHR.status === 204) {
+            window.location = '/';
+        }
+    })
 });
 
-$("#delete-no").click(function(ev) {
-  ev.preventDefault();
-  $('#delete-initial').show();
-  $("#delete_button_confirmation_container").hide();
+$("#delete-no").click(function (ev) {
+    ev.preventDefault();
+    $('#delete-initial').show();
+    $("#delete_button_confirmation_container").hide();
 });
 
 // Enter key blurs input elements
-$(":input").keyup(function(e) {
-  if (e.keyCode == 13) {
-      e.target.blur();
-  }
+$(":input").keyup(function (e) {
+    if (e.keyCode == 13) {
+        e.target.blur();
+    }
 });
 
 function update_lock() {
-    $.getJSON("/events/"+ get_current_event_id() +"/lock", function(data) {
-           return;
-        });
+    return $.getJSON("/events/" + get_current_event_id() + "/lock", function (data) {
+    });
 }
 
 function make_editable() {
-    $.getJSON("/events/"+ get_current_event_id() +"/lock", function(data) {
-            var edit_div = $("<div></div>");
+    $.getJSON("/events/" + get_current_event_id() + "/lock", function (data) {
+        let edit_div = $("<div></div>");
+        if (data.status === EDIT_UNLOCKED) {
+            $(".editable").removeAttr("disabled");
+            $(".editable_hidden").show();
+            $(".editable").trigger("edit");
 
-            if(data.status === EDIT_UNLOCKED) {
-                $(".editable").removeAttr("disabled");
-                $(".editable_hidden").show();
-                $(".editable").trigger("edit");
-
-                edit_div.attr({
-                            "id" : "edit_div",
-                            "class" : "alert alert-success",
-                            "role" : "alert"   
-                            });
-                edit_div.html("Save Changes");
-                edit_lock = setInterval(update_lock, EDIT_TIME);
-            } else if(data.status === EDIT_LOCKED) {
-                edit_div.attr({
-                            "id" : "edit_div",
-                            "class" : "alert alert-danger",
-                            "role" : "alert"   
-                            });
-                edit_div.html("<strong>"+data.modifier+"</strong> is currently editing this page.");               
-                $('#edit_status').off('click');
-                $('#edit_status').on('click', function() {location.reload();});
-            } else {
-                edit_div.attr({
-                            "id" : "edit_div",
-                            "class" : "alert alert-warning",
-                            "role" : "alert"   
-                            });
-                edit_div.html("The edit period for this event has expired");
-                $('#edit_status').off('click');
-            }
-            $("#edit_div").replaceWith(edit_div);
-        });
+            edit_div.attr({
+                "id": "edit_div",
+                "class": "alert alert-success",
+                "role": "alert"
+            });
+            edit_div.html("Save Changes");
+            edit_lock = setInterval(update_lock, EDIT_TIME);
+        } else if (data.status === EDIT_LOCKED) {
+            edit_div.attr({
+                "id": "edit_div",
+                "class": "alert alert-danger",
+                "role": "alert"
+            });
+            edit_div.html("<strong>" + data.modifier + "</strong> is currently editing this page.");
+            $('#edit_status').off('click');
+            $('#edit_status').on('click', function () {
+                location.reload();
+            });
+        } else {
+            edit_div.attr({
+                "id": "edit_div",
+                "class": "alert alert-warning",
+                "role": "alert"
+            });
+            edit_div.html("The edit period for this event has expired");
+            $('#edit_status').off('click');
+        }
+        $("#edit_div").replaceWith(edit_div);
+    });
 }
 
 function save_page() {
     clearInterval(edit_lock);
-    event = {};
-    hist = {};
+    let hist = {};
+    let event = {};
     hist.action = 'edit';
-
     $(".editable").trigger("save", [event, hist]);
-
     $(".editable_hidden").hide();
     $("input.editable").prop("disabled", true);
     $("select.editable").prop("disabled", true);
@@ -122,30 +120,29 @@ function save_page() {
     update_history(hist);
     update_event(event);
 
-    var edit_div = $("<div></div>");
+    let edit_div = $("<div></div>");
     edit_div.attr({
-                "id" : "edit_div",
-                "class" : "alert alert-info",
-                "role" : "alert"   
-        });
+        "id": "edit_div",
+        "class": "alert alert-info",
+        "role": "alert"
+    });
     edit_div.html("Click here to make changes");
     $("#edit_div").replaceWith(edit_div);
 }
 
-$("#edit_status").click(function(ev) {
-        var in_edit = ($('#edit_div').html() == "Save Changes");
-
-        if(in_edit) {
-            save_page();
-        } else {
-            make_editable();
-        }
+$("#edit_status").click(function (ev) {
+    let in_edit = ($('#edit_div').html() === "Save Changes");
+    if (in_edit) {
+        save_page();
+    } else {
+        make_editable();
+    }
 });
 
-var edit_window = $(window);
-var edit_status = $('#edit_status');
-var edit_top = edit_status.offset().top;
+let edit_window = $(window);
+let edit_status = $('#edit_status');
+let edit_top = edit_status.offset().top;
 
-edit_window.scroll(function() {
-        edit_status.toggleClass('sticky', edit_window.scrollTop() > edit_top);
+edit_window.scroll(function () {
+    edit_status.toggleClass('sticky', edit_window.scrollTop() > edit_top);
 });

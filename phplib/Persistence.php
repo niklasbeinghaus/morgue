@@ -1,12 +1,11 @@
 <?php
-
 require_once "Configuration.php";
 
 /**
  * implements the actual DB access methods
  */
-class Persistence {
-
+class Persistence
+{
     /** return codes */
     const OK = 0;
     const ERROR = 1;
@@ -41,106 +40,119 @@ class Persistence {
      * @param $conn - PDO connection object, will be newly instantiated when
      *                null (default: null)
      *
-     * @returns the event map including an "id" field on success and a map of the
+     * @return array the event map including an "id" field on success and a map of the
      * form ( "id" => null, "error" => "an error message" ) on failure
      */
-    static function save_event($postmortem, $conn = null) {
+    static function save_event($postmortem, $conn = null)
+    {
         $values = array("title");
-
         try {
             if (isset($postmortem["id"])) {
                 array_push($values, "id");
                 $sql = "UPDATE postmortems SET title=:title";
-
-                if( isset($postmortem['summary']) ) {
-                    $sql.= ",summary=:summary";
-                    array_push($values,"summary");
+                if (isset($postmortem['summary'])) {
+                    $sql .= ",summary=:summary";
+                    array_push($values, "summary");
                 }
-                if( isset($postmortem['why_surprised']) ) {
-                    $sql.= ",why_surprised=:why_surprised";
-                    array_push($values,"why_surprised");
+                if (isset($postmortem['why_surprised'])) {
+                    $sql .= ",why_surprised=:why_surprised";
+                    array_push($values, "why_surprised");
                 }
-                if( isset($postmortem['tldr']) ) {
-                    $sql.= ",tldr=:tldr";
-                    array_push($values,"tldr");
+                if (isset($postmortem['tldr'])) {
+                    $sql .= ",tldr=:tldr";
+                    array_push($values, "tldr");
                 }
-                if ( isset( $postmortem['meeting_notes_link'] ) ){
-                    $sql.= ",meeting_notes_link=:meeting_notes_link";
+                if (isset($postmortem['meeting_notes_link'])) {
+                    $sql .= ",meeting_notes_link=:meeting_notes_link";
                     array_push($values, "meeting_notes_link");
                 }
-                if( isset($postmortem['starttime']) ) {
-                    $sql.= ",starttime=:starttime";
-                    array_push($values,"starttime");
+                if (isset($postmortem['starttime'])) {
+                    $sql .= ",starttime=:starttime";
+                    array_push($values, "starttime");
                 }
-                if( isset($postmortem['endtime']) ) {
-                    $sql.= ",endtime=:endtime";
-                    array_push($values,"endtime");
+                if (isset($postmortem['endtime'])) {
+                    $sql .= ",endtime=:endtime";
+                    array_push($values, "endtime");
                 }
-                if( isset($postmortem['detecttime']) ) {
-                    $sql.= ",detecttime=:detecttime";
-                    array_push($values,"detecttime");
+                if (isset($postmortem['detecttime'])) {
+                    $sql .= ",detecttime=:detecttime";
+                    array_push($values, "detecttime");
                 }
-                if( isset($postmortem['severity']) ) {
-                    $sql.= ",severity=:severity";
-                    array_push($values,"severity");
+                if (isset($postmortem['severity'])) {
+                    $sql .= ",severity=:severity";
+                    array_push($values, "severity");
                 }
-                if( isset($postmortem['gcal']) ) {
-                    $sql.= ",gcal=:gcal";
-                    array_push($values,"gcal");
+                if (isset($postmortem['gcal'])) {
+                    $sql .= ",gcal=:gcal";
+                    array_push($values, "gcal");
                 }
-                if ( isset($postmortem['contact']) ) {
-                    $sql.= ",contact=:contact";
-                    array_push($values,"contact");
+                if (isset($postmortem['contact'])) {
+                    $sql .= ",contact=:contact";
+                    array_push($values, "contact");
                 }
-                if ( isset( $postmortem['statustime'] ) ){
-                    $sql.= ",statustime=:statustime";
-                    array_push($values,"statustime");
+                if (isset($postmortem['statustime'])) {
+                    $sql .= ",statustime=:statustime";
+                    array_push($values, "statustime");
                 }
-                if ( isset( $postmortem['created'] ) ){
-                    $sql.= ",created=:created";
+                if (isset($postmortem['created'])) {
+                    $sql .= ",created=:created";
                     array_push($values, "created");
                 }
-                if ( isset( $postmortem['facilitator'] ) ){
-                    $sql.= ",facilitator=:facilitator";
+                if (isset($postmortem['facilitator'])) {
+                    $sql .= ",facilitator=:facilitator";
                     array_push($values, "facilitator");
                 }
-                if ( isset( $postmortem['problem_type'] ) ){
-                    $sql.= ",problem_type=:problem_type";
+                if (isset($postmortem['problem_type'])) {
+                    $sql .= ",problem_type=:problem_type";
                     array_push($values, "problem_type");
                 }
-                if ( isset( $postmortem['subsystem'] ) ){
-                    $sql.= ",subsystem=:subsystem";
+                if (isset($postmortem['subsystem'])) {
+                    $sql .= ",subsystem=:subsystem";
                     array_push($values, "subsystem");
                 }
-                if ( isset( $postmortem['owner_team'] ) ){
-                    $sql.= ",owner_team=:owner_team";
+                if (isset($postmortem['owner_team'])) {
+                    $sql .= ",owner_team=:owner_team";
                     array_push($values, "owner_team");
                 }
-                if ( isset( $postmortem['impact_type'] ) ){
-                    $sql.= ",impact_type=:impact_type";
+                if (isset($postmortem['impact_type'])) {
+                    $sql .= ",impact_type=:impact_type";
                     array_push($values, "impact_type");
                 }
-                if ( isset( $postmortem['incident_cause'] ) ){
-                    $sql.= ",incident_cause=:incident_cause";
+                if (isset($postmortem['incident_cause'])) {
+                    $sql .= ",incident_cause=:incident_cause";
                     array_push($values, "incident_cause");
                 }
-                $sql.=" WHERE id=:id LIMIT 1";
-
-
+                $sql .= " WHERE id=:id LIMIT 1";
             } else {
-                array_push($values, "summary", "why_surprised", "tldr", "meeting_notes_link", "starttime", "endtime", "statustime", "detecttime", "severity", "facilitator", "problem_type", "subsystem", "owner_team", "impact_type", "incident_cause", "created");
-
+                array_push(
+                    $values,
+                    "summary",
+                    "why_surprised",
+                    "tldr",
+                    "meeting_notes_link",
+                    "starttime",
+                    "endtime",
+                    "statustime",
+                    "detecttime",
+                    "severity",
+                    "facilitator",
+                    "problem_type",
+                    "subsystem",
+                    "owner_team",
+                    "impact_type",
+                    "incident_cause",
+                    "created"
+                );
                 $sql = "INSERT INTO postmortems (title,summary,why_surprised,tldr,meeting_notes_link,starttime,endtime,
                     statustime,detecttime,severity,facilitator,problem_type,subsystem,owner_team,impact_type,incident_cause,created) VALUES (:title,:summary,:why_surprised,:tldr,:meeting_notes_link,:starttime,:endtime,:statustime,:detecttime,:severity,:facilitator,:problem_type,:subsystem,:owner_team,:impact_type,:incident_cause,:created)";
             }
             $stmt = $conn->prepare($sql);
             $stmt->execute(array_intersect_key($postmortem, array_flip($values)));
-           if (!array_key_exists("id", $postmortem)) {
+            if (!array_key_exists("id", $postmortem)) {
                 $postmortem["id"] = $conn->lastInsertId();
             }
             return $postmortem;
-
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             return array("id" => null, "error" => $e->getMessage());
         }
     }
@@ -149,15 +161,15 @@ class Persistence {
      * Get a postmortem from the database
      *
      * @param $postmortem_id - id of the postmortem to get
-     * @param $conn          - PDO connection object, will be newly instantiated when
+     * @param $conn - PDO connection object, will be newly instantiated when
      *                         null (default: null)
      *
-     * @returns a postmortem map including an "id" field on success or a map of the
+     * @return array postmortem map including an "id" field on success or a map of the
      * form ( "id" => null, "error" => "an error message" ) on failure
      */
-    static function get_postmortem($postmortem_id, $conn = null) {
+    static function get_postmortem($postmortem_id, $conn = null)
+    {
         $conn = $conn ?: Persistence::get_database_object();
-
         try {
             $sql = "SELECT id, title, summary, why_surprised, tldr,meeting_notes_link, starttime, endtime, statustime,
                     detecttime,severity,facilitator,problem_type,subsystem,owner_team,impact_type,incident_cause, contact, gcal, created, modified, modifier, deleted 
@@ -166,8 +178,7 @@ class Persistence {
             $stmt->execute(array('id' => $postmortem_id));
             $postmortem = $stmt->fetch(PDO::FETCH_ASSOC);
             return $postmortem;
-
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             return array("id" => null, "error" => $e->getMessage());
         }
     }
@@ -183,12 +194,12 @@ class Persistence {
      * @param $conn - PDO connection object, will be newly instantiated when
      *                null (default: null)
      *
-     * @returns the postmortem map including an "id" field on success and a map of the
+     * @return the postmortem map including an "id" field on success and a map of the
      * form ( "id" => null, "error" => "an error message" ) on failure
      */
-    static function save_forum($forum, $conn = null) {
+    static function save_forum($forum, $conn = null)
+    {
         $values = array("link", "comment", "event_id");
-
         try {
             if (array_key_exists("id", $forum)) {
                 array_push($values, "id");
@@ -204,8 +215,7 @@ class Persistence {
                 $forum["id"] = $conn->lastInsertId();
             }
             return $forum;
-
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             return array("id" => null, "error" => $e->getMessage());
         }
     }
@@ -220,22 +230,21 @@ class Persistence {
      * This is only good if your WHERE clause is checking for equlity. If you
      * want to do a range query then user get_range_array instead.
      *
-     * @param $columns    - array of the columns you want data from
+     * @param $columns - array of the columns you want data from
      * @param $table_name - name of table to get data from
-     * @param $conn       - PDO connection object
+     * @param $conn - PDO connection object
      *
-     * @returns ( "status" => self::OK, "error" => "", "values" => array(values) ) on success
+     * @return array ( "status" => self::OK, "error" => "", "values" => array(values) ) on success
      * and ( "status" => self::ERROR, "error" => "message", "values" => array() ) on failure
      */
-    static function get_array($columns, $where = array(), $table_name, $conn = null) {
+    static function get_array($columns, $where = array(), $table_name, $conn = null)
+    {
         if (!$where) {
             $where = array();
         }
-
         if (!isset($where['deleted'])) {
             $where['deleted'] = 0;
         }
-
         if ($table_name == 'tags' && $columns == array('id', 'title')) {
             if (isset($where['postmortem_id'])) {
                 $get_sql = 'SELECT id, title FROM tags
@@ -250,33 +259,29 @@ class Persistence {
             if (!isset($where['tag_ids'])) {
                 trigger_error('Call to get_array() for "tags" table was missing tag_ids', E_USER_ERROR);
             }
-
             $tags = array();
             foreach ($where['tag_ids'] as $tag_id) {
                 $tags[] = intval($tag_id);
             }
             $tags = implode(', ', $tags);
             unset($where['tag_ids']);
-
             $get_sql = "SELECT DISTINCT id, title, starttime, endtime, severity
                         FROM postmortems pm INNER JOIN (postmortem_referenced_tags pmt)
                         on (pmt.postmortem_id = pm.id)
                         WHERE tag_id IN ($tags) AND pmt.deleted = :deleted";
         } else {
             $get_sql = 'SELECT ' . implode(',', $columns) . ' FROM ' . $table_name;
-
             if ($where) {
                 $placeholders = array();
-
-                array_walk($where, function($value, $column) use (&$placeholders) {
-                    $placeholders[] = sprintf('%1$s = :%1$s', $column);
-                });
-
+                array_walk(
+                    $where,
+                    function ($value, $column) use (&$placeholders) {
+                        $placeholders[] = sprintf('%1$s = :%1$s', $column);
+                    }
+                );
                 $get_sql .= ' WHERE ' . implode(' AND ', $placeholders);
             }
         }
-
-
         try {
             $ret = array();
             $stmt = $conn->prepare($get_sql);
@@ -285,9 +290,12 @@ class Persistence {
                 array_push($ret, $row);
             }
             return array("status" => self::OK, "error" => "", "values" => $ret);
-        } catch(PDOException $e) {
-            return array("status" => self::ERROR, "error" => $e->getMessage(),
-                         "values" => array());
+        } catch (PDOException $e) {
+            return array(
+                "status" => self::ERROR,
+                "error" => $e->getMessage(),
+                "values" => array(),
+            );
         }
     }
 
@@ -304,42 +312,40 @@ class Persistence {
      * @access public
      * @return database results array
      */
-    static function range_query($columns, $table_name, $where = array(), $conn = null) {
+    static function range_query($columns, $table_name, $where = array(), $conn = null)
+    {
         $get_sql = 'SELECT ' . implode(',', $columns) . ' FROM ' . $table_name;
-
         $placeholders = array();
         $placeholder_values = array();
-
-        array_walk($where, function($value, $col) use (&$placeholders, &$placeholder_values) {
-            if (is_object($value)) {
-                $operator = $value->operator;
-                switch ($operator) {
-                case "=":  // not actually a range query
-                case "!=": // not actually a range query but not supported by get_array
-                case ">":
-                case "<":
-                case ">=":
-                case "<=":
-                    $placeholder_values[$col] = $value->value;
-                    $placeholders[] = sprintf('%s = :%s', $col, $col);
-                    break;
-
-                case "BETWEEN":
-                    $min_ph = 'min_' . $col;
-                    $max_ph = 'max_' . $col;
-                    $placeholder_values[$min_ph] = $value->min_value;
-                    $placeholder_values[$max_ph] = $value->max_value;
-                    $placeholders[] = sprintf('%s BETWEEN :%s AND :%s', $col, $min_ph, $max_ph);
-                    break;
-
-                default:
-                    break;
+        array_walk(
+            $where,
+            function ($value, $col) use (&$placeholders, &$placeholder_values) {
+                if (is_object($value)) {
+                    $operator = $value->operator;
+                    switch ($operator) {
+                        case "=":  // not actually a range query
+                        case "!=": // not actually a range query but not supported by get_array
+                        case ">":
+                        case "<":
+                        case ">=":
+                        case "<=":
+                            $placeholder_values[$col] = $value->value;
+                            $placeholders[] = sprintf('%s = :%s', $col, $col);
+                            break;
+                        case "BETWEEN":
+                            $min_ph = 'min_' . $col;
+                            $max_ph = 'max_' . $col;
+                            $placeholder_values[$min_ph] = $value->min_value;
+                            $placeholder_values[$max_ph] = $value->max_value;
+                            $placeholders[] = sprintf('%s BETWEEN :%s AND :%s', $col, $min_ph, $max_ph);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
-        });
-
+        );
         $get_sql .= " WHERE " . implode(' AND ', $placeholders);
-
         try {
             $ret = array();
             $stmt = $conn->prepare($get_sql);
@@ -348,9 +354,12 @@ class Persistence {
                 array_push($ret, $row);
             }
             return array("status" => self::OK, "error" => "", "values" => $ret);
-        } catch(PDOException $e) {
-            return array("status" => self::ERROR, "error" => $e->getMessage(),
-                         "values" => array());
+        } catch (PDOException $e) {
+            return array(
+                "status" => self::ERROR,
+                "error" => $e->getMessage(),
+                "values" => array(),
+            );
         }
     }
 
@@ -362,21 +371,22 @@ class Persistence {
      * field and the array values into the :value field. So the passed in SQL
      * statements have to reflect that.
      *
-     * @param $table_name    - name of table to store/update data
-     * @param $assoc_column  - column in remote table
-     * @param $values        - array of values to insert
+     * @param $table_name - name of table to store/update data
+     * @param $assoc_column - column in remote table
+     * @param $values - array of values to insert
      * @param $postmortem_id - ID of the event to insert for
-     * @param $conn          - PDO connection object
+     * @param $conn - PDO connection object
      *
-     * @returns ( "status" => self::OK ) on success
+     * @return array ( "status" => self::OK ) on success
      * or ( "status" => self::ERROR, "error" => "an error message" ) on failure
      */
-    static function store_array($table_name, $assoc_column, $values, $postmortem_id, $conn) {
+    static function store_array($table_name, $assoc_column, $values, $postmortem_id, $conn)
+    {
         try {
             foreach ($values as $value) {
                 $select_sql = 'SELECT postmortem_id, id, deleted ' .
-                              ' FROM ' . $table_name .
-                              ' WHERE postmortem_id = :postmortem_id AND ' . $assoc_column . ' = :value LIMIT 1';
+                    ' FROM ' . $table_name .
+                    ' WHERE postmortem_id = :postmortem_id AND ' . $assoc_column . ' = :value LIMIT 1';
                 $stmt = $conn->prepare($select_sql);
                 $stmt->execute(array('postmortem_id' => $postmortem_id, 'value' => $value));
                 $target_row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -392,76 +402,79 @@ class Persistence {
                     }
                 }
             }
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             return array('status' => self::ERROR, 'error' => $e->getMessage());
         }
-        return array( 'status' => self::OK );
+        return array('status' => self::OK);
     }
 
     /**
      * function to get a single association by id (like images, channels,
      * tickets)
      *
-     * @param $columns    - array of columns you want to get the values from
+     * @param $columns - array of columns you want to get the values from
      * @param $table_name - table to get the data from
-     * @param $pk         - the primary key to fetch for
-     * @param $conn       - PDO connection object
+     * @param $pk - the primary key to fetch for
+     * @param $conn - PDO connection object
      *
-     * @returns ( "status" => self::OK, "value" => $row ) on success
+     * @return array ( "status" => self::OK, "value" => $row ) on success
      * or ( "status" => self::ERROR, "error" => "an error message" ) on failure
      */
-    static function get_association_by_id($columns, $table_name, $pk, $conn) {
+    static function get_association_by_id($columns, $table_name, $pk, $conn)
+    {
         $sql = "SELECT " . (implode(',', $columns)) . " FROM " . $table_name;
         try {
             $stmt = $conn->prepare($sql);
             $stmt->execute(array('id' => $pk));
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             return array("status" => self::ERROR, "error" => $e->getMessage());
         }
-        return array( "status" => self::OK, "value" => $row );
+        return array("status" => self::OK, "value" => $row);
     }
 
     /**
      * function to flag (by id) a single association as deleted
      *
-     * @param $sql  - the sql to execute
-     * @param $pk   - the primary key to delete for
+     * @param $sql - the sql to execute
+     * @param $pk - the primary key to delete for
      * @param $conn - PDO connection object
      *
-     * @returns ( 'status' => self::OK) on success
+     * @return ( 'status' => self::OK) on success
      * or ( "status" => self::ERROR, "error" => "an error message" ) on failure
      */
-    static function flag_as_deleted($table_name, $pk_column, $pk, $conn) {
+    static function flag_as_deleted($table_name, $pk_column, $pk, $conn)
+    {
         try {
             $sql = "UPDATE $table_name SET deleted=1 WHERE $pk_column = :id";
             $stmt = $conn->prepare($sql);
             $stmt->execute(array('id' => $pk));
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             return array("status" => self::ERROR, "error" => $e->getMessage());
         }
-        return array( "status" => self::OK );
+        return array("status" => self::OK);
     }
 
     /**
      * function to flag (by id) a single association as UNdeleted
      *
-     * @param $sql  - the sql to execute
-     * @param $pk   - the primary key to delete for
+     * @param $sql - the sql to execute
+     * @param $pk - the primary key to delete for
      * @param $conn - PDO connection object
      *
-     * @returns ( 'status' => self::OK) on success
+     * @return ( 'status' => self::OK) on success
      * or ( "status" => self::ERROR, "error" => "an error message" ) on failure
      */
-    static function flag_as_undeleted($table_name, $pk_column, $pk, $conn) {
+    static function flag_as_undeleted($table_name, $pk_column, $pk, $conn)
+    {
         try {
             $sql = "UPDATE $table_name SET deleted=0 WHERE $pk_column = :id";
             $stmt = $conn->prepare($sql);
             $stmt->execute(array('id' => $pk));
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             return array("status" => self::ERROR, "error" => $e->getMessage());
         }
-        return array( "status" => self::OK );
+        return array("status" => self::OK);
     }
 
     /**
@@ -469,31 +482,30 @@ class Persistence {
      * on the environment we are running in (determined by the env var
      * MORGUE_ENVIRONMENT).
      *
-     * @returns a database PDO object or null on error
+     * @return PDO|null a database PDO object or null on error
      */
-    static function get_database_object() {
+    static function get_database_object()
+    {
         $config = Configuration::get_configuration();
         $host = $config['database']['mysqlhost'];
         $port = $config['database']['mysqlport'];
-        $adb  = $config['database']['database'];
+        $adb = $config['database']['database'];
         $user = $config['database']['username'];
         $pass = $config['database']['password'];
-
         $options = array();
-        if(array_key_exists('client_key', $config['database']) 
-           && array_key_exists('client_cert', $config['database']) 
-           && array_key_exists('ca_cert', $config['database'])) {
+        if (array_key_exists('client_key', $config['database'])
+            && array_key_exists('client_cert', $config['database'])
+            && array_key_exists('ca_cert', $config['database'])) {
             $options[PDO::MYSQL_ATTR_SSL_KEY] = $config['database']['client_key'];
             $options[PDO::MYSQL_ATTR_SSL_CERT] = $config['database']['client_cert'];
             $options[PDO::MYSQL_ATTR_SSL_CA] = $config['database']['ca_cert'];
         }
         try {
-            $conn = new PDO('mysql:host='.$host.';port='.$port.';dbname='.$adb, $user, $pass, $options);
+            $conn = new PDO('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $adb, $user, $pass, $options);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return $conn;
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             return null;
         }
     }
-
 }

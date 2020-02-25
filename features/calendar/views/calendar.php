@@ -1,7 +1,9 @@
 <!-- Calendar -->
 
-<script type="text/javascript">
-     var cal = {};
+<script type="text/javascript" crossorigin="anonymous">
+    if (!cal.defined) {
+        let cal = {};
+    }
 
      // google calendar eventIds must >= 5 digits. Helper function to pad eventIds.
      function padNumber(n) { 

@@ -26,7 +26,7 @@
                                     if (strpos($js_asset, "https://") === false && strpos($js_asset, "http://") === false) {
 					echo "<script type=\"text/javascript\" src=\"/features/{$navbar_feature['name']}/js/{$js_asset}\"></script>"; 
                                     } else {
-					echo "<script type=\"text/javascript\" src=\"{$js_asset}\"></script>";                                         
+					echo "<script crossorigin='anonymous' type=\"text/javascript\" src=\"{$js_asset}\"></script>";
                                     }
                                 }
 			}

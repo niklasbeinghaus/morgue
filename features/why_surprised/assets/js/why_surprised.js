@@ -41,6 +41,7 @@ function make_why_surprised_editable() {
  * save the markdown summary and render as HTML
  */
 function why_surprised_save(e, event, history) {
+    let old_surprised = '';
     var new_surprised = $("#why_surprised").val();
 
     var Diff = new diff_match_patch();

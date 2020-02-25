@@ -1,7 +1,7 @@
 <?php
 
-class Irc {
-
+class Irc
+{
     /** constants mapped from Persistence class */
     const OK = Persistence::OK;
     const ERROR = Persistence::ERROR;
@@ -11,9 +11,10 @@ class Irc {
      * if the 'morgue_get_irc_channels_list' exists, call it and return
      * its results - otherwise, lookup the config file for ['irc']['channels']
      *
-     * @returns array of IRC channels strings
+     * @return array of IRC channels strings
      */
-    static function get_irc_channels_list(){
+    static function get_irc_channels_list()
+    {
         if (function_exists("morgue_get_irc_channels_list")) {
             return morgue_get_irc_channels_list();
         } else {
@@ -27,13 +28,14 @@ class Irc {
      * get all IRC channels associated with an event. The single channel
      * maps have the keys "id" and "channel".
      *
-     * @param $event_id - the numeric event id
-     * @param $conn - a PDO connection object
-     *
-     * @returns ( "status" => self::OK, "error" => "", "values" => array(channels) ) on success
+     * @param int $event_id - the numeric event id
+     * @param PDO|null $conn - a PDO connection object
+     * @return array ( "status" => self::OK, "error" => "", "values" => array(channels) ) on success
      * and ( "status" => self::ERROR, "error" => "message", "values" => array() ) on failure
      */
-    static function get_irc_channels_for_event($event_id, $conn = null) {
+    static function get_irc_channels_for_event($event_id, $conn = null)
+    {
+        $event_id = (int)$event_id;
         $conn = $conn ?: Persistence::get_database_object();
         $columns = array('id', 'channel');
         $table_name = 'irc';
@@ -42,9 +44,11 @@ class Irc {
             'deleted' => 0,
         );
         if (is_null($conn)) {
-            return array("status" => self::ERROR,
+            return array(
+                "status" => self::ERROR,
                 "error" => "Couldn't get connection object.",
-                "values" => array());
+                "values" => array(),
+            );
         }
         return Persistence::get_array($columns, $where, $table_name, $conn);
     }
@@ -52,39 +56,52 @@ class Irc {
     /**
      * save images belonging to a certain event to the database
      *
-     * @param $event_id - numeric ID of the event to store for
-     * @param $images - array of image URLs to store
-     * @param $conn - a PDO connection object
+     * @param int $event_id - numeric ID of the event to store for
+     * @param array $channels - array of channels to store
+     * @param PDO|null $conn - a PDO connection object
      *
-     * @returns ( "status" => self::OK ) on success
+     * @return array ( "status" => self::OK ) on success
      * or ( "status" => self::ERROR, "error" => "an error message" ) on failure
      */
-    static function save_irc_channels_for_event($event_id, $channels, $conn = null) {
+    static function save_irc_channels_for_event($event_id, $channels, $conn = null)
+    {
+        $event_id = (int) $event_id;
         $conn = $conn ?: Persistence::get_database_object();
         $table_name = 'irc';
         $assoc_column = 'channel';
         if (is_null($conn)) {
-            return array("status" => self::ERROR,
-                "error" => "Couldn't get connection object.");
+            return array(
+                "status" => self::ERROR,
+                "error" => "Couldn't get connection object.",
+            );
         }
-        return Persistence::store_array($table_name, $assoc_column, $channels,
-                                        $event_id, $conn);
+        return Persistence::store_array(
+            $table_name,
+            $assoc_column,
+            $channels,
+            $event_id,
+            $conn
+        );
     }
 
     /**
      * delete irc channels belonging to a certain event from the database
      *
-     * @param $event_id - numeric ID of the event to store for
-     * @param $conn - a PDO connection object
+     * @param int $event_id - numeric ID of the event to store for
+     * @param PDO|null $conn - a PDO connection object
      *
-     * @returns ( "status" => self::OK ) on success
+     * @return array ( "status" => self::OK ) on success
      * or ( "status" => self::ERROR, "error" => "an error message" ) on failure
      */
-    static function delete_irc_channels_for_event($event_id, $conn = null) {
+    static function delete_irc_channels_for_event($event_id, $conn = null)
+    {
+        $event_id = (int)$event_id;
         $conn = $conn ?: Persistence::get_database_object();
         if (is_null($conn)) {
-            return array("status" => self::ERROR,
-                "error" => "Couldn't get connection object.");
+            return array(
+                "status" => self::ERROR,
+                "error" => "Couldn't get connection object.",
+            );
         }
         return Persistence::flag_as_deleted('irc', 'postmortem_id', $event_id, $conn);
     }
@@ -92,59 +109,70 @@ class Irc {
     /**
      * function to get an irc channel from the association table
      *
-     * @param $id - ID to get
-     * @param $conn - PDO connection object (default: null)
+     * @param int $id - ID to get
+     * @param PDO|null $conn - PDO connection object (default: null)
      *
-     * @returns ( "status" => self::OK, "value" => $row ) on success
+     * @return array ( "status" => self::OK, "value" => $row ) on success
      * or ( "status" => self::ERROR, "error" => "an error message" ) on failure
      */
-    static function get_channel($theid, $conn = null) {
+    static function get_channel($id, $conn = null)
+    {
+        $id = (int)$args['id'];
         $conn = $conn ?: Persistence::get_database_object();
         $columns = array('id', 'channel');
         $table_name = 'irc';
         if (is_null($conn)) {
-            return array("status" => self::ERROR,
-                "error" => "Couldn't get connection object.");
+            return array(
+                "status" => self::ERROR,
+                "error" => "Couldn't get connection object.",
+            );
         }
-        return Persistence::get_association_by_id($columns, $table_name, $theid, $conn);
+        return Persistence::get_association_by_id($columns, $table_name, $id, $conn);
     }
 
     /**
      * function to delete a channel from the association table
      *
-     * @param $id - ID to delete
-     * @param $conn - PDO connection object (default: null)
+     * @param int $id - ID to delete
+     * @param PDO|null $conn - PDO connection object (default: null)
      *
-     * @returns ( "status" => self::OK ) on success
+     * @return array ( "status" => self::OK ) on success
      * or ( "status" => self::ERROR, "error" => "an error message" ) on failure
      */
-    static function delete_channel($theid, $conn = null) {
+    static function delete_channel($id, $conn = null)
+    {
+        $id = (int)$args['id'];
         $conn = $conn ?: Persistence::get_database_object();
         if (is_null($conn)) {
-            return array("status" => self::ERROR,
-                "error" => "Couldn't get connection object.");
+            return array(
+                "status" => self::ERROR,
+                "error" => "Couldn't get connection object.",
+            );
         }
-        return Persistence::flag_as_deleted('irc', 'id', $theid, $conn);
+        return Persistence::flag_as_deleted('irc', 'id', $id, $conn);
     }
 
     /**
      * function to UNdelete a channel from the association table
      *
-     * @param $id - ID to delete
-     * @param $conn - PDO connection object (default: null)
+     * @param int $id - ID to delete
+     * @param PDO|null $conn - PDO connection object (default: null)
      *
-     * @returns ( "status" => self::OK ) on success
+     * @return array ( "status" => self::OK ) on success
      * or ( "status" => self::ERROR, "error" => "an error message" ) on failure
      */
-    static function undelete_channel($theid, $conn = null) {
+    static function undelete_channel($id, $conn = null)
+    {
+        $id = (int)$args['id'];
         $conn = $conn ?: Persistence::get_database_object();
         $table_name = 'irc';
         if (is_null($conn)) {
-            return array("status" => self::ERROR,
-                "error" => "Couldn't get connection object.");
+            return array(
+                "status" => self::ERROR,
+                "error" => "Couldn't get connection object.",
+            );
         }
-        return Persistence::flag_as_undeleted($table_name, 'postmortem_id', $theid, $conn);
+        return Persistence::flag_as_undeleted($table_name, 'postmortem_id', $id, $conn);
     }
-
 }
 

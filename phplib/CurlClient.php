@@ -1,9 +1,14 @@
 <?php
 
-class CurlClient {
-
-    function get($url, array $params = null, $user_pass = null, $proxy = null,
-                 $timeout = 10) {
+class CurlClient
+{
+    function get(
+        $url,
+        array $params = null,
+        $user_pass = null,
+        $proxy = null,
+        $timeout = 10
+    ) {
         $query_string = empty($params)
             ? ''
             : '?' . http_build_query($params);

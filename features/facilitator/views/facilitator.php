@@ -7,7 +7,7 @@
                 <label class="control-label">Facilitator: </label>
                 <div class="controls controls-row">
                     <input type="text" id="facilitator" name="facilitator"
-                           value="<?php echo $facilitator;?>" class="input-xlarge editable" disabled />
+                           value="<?php echo $facilitator; ?>" class="input-xlarge editable" disabled />
                 </div>
             </div>
         </div>
